@@ -13,8 +13,9 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-  <header class="header" id="inicio">
+  <header class="header" >
   <div class="container nav">
 
     <!-- Logo -->
@@ -40,7 +41,7 @@
 
       <button
         class="menu-btn"
-        id="menuBtn"
+        id="menuBtn" type="button" aria-controls="mobileMenu"
         aria-label="Abrir menu"
         aria-expanded="false"
       >
@@ -53,7 +54,7 @@
   </div>
 
   <!-- Menu mobile -->
-  <div class="mobile-menu" id="mobileMenu">
+  <nav class="mobile-menu" id="mobileMenu" aria-label="Navegação móvel">
     <a href="#inicio">
       <span>01</span>
       Início
@@ -78,10 +79,10 @@
       Falar conosco
       <b>→</b>
     </a>
-  </div>
+  </nav>
 </header>
-  <main>
-    <section class="hero">
+  <main id="conteudo">
+    <section class="hero" id="inicio">
       <div class="hero-glow glow-one"></div>
       <div class="hero-glow glow-two"></div>
 
@@ -124,7 +125,7 @@
 
           <div class="main-card">
             <div class="card-top">
-              <span>Olá! 👋</span>
+              <span>SEU PRÓXIMO PASSO</span>
               <span class="status-dot"></span>
             </div>
 
@@ -143,7 +144,7 @@
             </div>
 
             <div class="card-footer">
-              <small>Análise personalizada</small>
+              <small>Orientação personalizada</small>
               <b>+ Simples</b>
             </div>
           </div>
@@ -173,50 +174,10 @@
      VÍDEO INSTITUCIONAL
 ========================= -->
 
-<section class="institutional-video">
-  <div class="container">
-
-    <div class="video-heading">
-      <span class="eyebrow">
-        <i></i>
-        Conheça a SOU + BLU
-      </span>
-
-      <h2>
-        Crédito com <span>proximidade</span> e confiança.
-      </h2>
-
-      <p>
-        Conheça um pouco mais sobre a nossa empresa,
-        nossa forma de trabalhar e como podemos ajudar você.
-      </p>
-    </div>
-
-    <div class="video-wrapper">
-
-      <!--
-        Troque o src pelo link do seu vídeo.
-        Exemplo para YouTube:
-        https://www.youtube.com/embed/SEU_ID
-      -->
-
-      <iframe
-        src="https://www.youtube.com/embed/SEU_VIDEO"
-        title="Vídeo institucional SOU + BLU"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen>
-      </iframe>
-
-      <div class="video-label">
-        <span class="video-play">▶</span>
-        <div>
-          <strong>SOU + BLU</strong>
-          <small>Vídeo institucional</small>
-        </div>
-      </div>
-
-    </div>
-
+<section class="institutional-video" aria-labelledby="about-title">
+  <div class="container about-grid">
+    <div class="about-mark" aria-hidden="true"><span>SOU</span><strong>+ BLU</strong><small>CONEXÕES QUE ABREM POSSIBILIDADES</small></div>
+    <div class="video-heading"><span class="eyebrow">Perto de você, em cada etapa</span><h2 id="about-title">Antes do crédito,<br>uma boa <span>conversa.</span></h2><p>Seus planos têm uma história. Queremos ouvir a sua, explicar as possibilidades e ajudar você a dar o próximo passo com clareza.</p><a class="text-link" href="#como-funciona">Conheça nosso atendimento <span>↗</span></a></div>
   </div>
 </section>
 
@@ -238,7 +199,7 @@
 
           <article class="solution-card featured">
             <div class="solution-icon orange">▣</div>
-            <span class="card-tag">Mais procurado</span>
+            <span class="card-tag">Conheça a opção</span>
             <h3>Crédito consignado</h3>
             <p>Uma opção de crédito com contratação orientada pela nossa equipe.</p>
             <a href="#contato">Saiba mais <span>→</span></a>
@@ -390,10 +351,12 @@
             <p>Fale com nossa equipe e descubra as opções disponíveis para você.</p>
           </div>
 
-          <!-- Troque o href pelo WhatsApp oficial da promotora -->
-          <a href="https://wa.me/5500000000000" class="btn btn-white" target="_blank" rel="noopener noreferrer">
-            Falar com um especialista <span>→</span>
+          <div class="contact-action">
+          <a id="whatsappLink" href="#contact-status" class="btn btn-white" aria-describedby="contact-status">
+            Falar com um especialista <span>↗</span>
           </a>
+          <p id="contact-status" role="status">Canal de atendimento em atualização.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -420,6 +383,6 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
