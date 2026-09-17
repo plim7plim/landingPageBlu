@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Cadastros de parceiros · SOU + BLU</title>
+
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="alternate icon" href="/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    [hidden] { display: none !important; }
+    .admin-wrap { width: min(1300px, calc(100% - 32px)); margin: 40px auto 80px; }
+    .admin-gate { display: grid; gap: 14px; max-width: 360px; margin: 120px auto; text-align: center; }
+    .admin-gate input { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; font: inherit; font-size: 14px; }
+    .admin-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .admin-head h1 { font-family: "Barlow", sans-serif; font-size: 26px; font-weight: 800; }
+    .admin-status { color: var(--muted); font-size: 13px; }
+    .btn-small { padding: 9px 16px; font-size: 12px; }
+
+    .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
+    .board-col { display: flex; flex-direction: column; gap: 12px; padding: 14px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--line); min-height: 200px; }
+    .board-col.drag-over { border-color: var(--blue); background: var(--blue-light); }
+    .board-col-head { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 8px; border-bottom: 1px solid var(--line); }
+    .board-col-head h2 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; color: var(--text); }
+    .board-count { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: #fff; border: 1px solid var(--line); font-size: 11px; font-weight: 800; color: var(--muted); }
+    .board-cards { display: grid; gap: 10px; min-height: 60px; }
+    .board-empty { padding: 18px 6px; text-align: center; color: var(--muted); font-size: 12px; }
+    .board-hint { margin: 0 4px 4px; padding: 8px 10px; border-radius: 8px; background: var(--blue-light); color: var(--blue); font-size: 11px; line-height: 1.5; }
+
+    .partner-card { padding: 14px; border-radius: 12px; background: #fff; border: 1px solid var(--line); box-shadow: 0 2px 6px rgba(16,35,68,.04); cursor: grab; }
+    .partner-card:active { cursor: grabbing; }
+    .partner-card.dragging { opacity: .4; }
+    .partner-card strong { display: block; font-size: 13px; color: var(--text); }
+    .partner-card small { display: block; margin-top: 3px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .partner-card .card-doc { color: var(--blue); font-weight: 700; }
+
+    @media (max-width: 900px) {
+      .board { grid-template-columns: 1fr; }
+    }
+
+    .detail-overlay { position: fixed; inset: 0; background: rgba(16,35,68,.45); display: grid; place-items: center; padding: 20px; z-index: 50; }
+    .detail-modal { background: #fff; border-radius: var(--radius); max-width: 640px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(16,35,68,.25); }
+    .detail-modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 22px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: #fff; }
+    .detail-modal-head h2 { font-family: "Barlow", sans-serif; font-size: 18px; font-weight: 800; }
+    .detail-close { border: none; background: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); padding: 4px; }
+    .detail-body { padding: 20px 22px; display: grid; gap: 20px; }
+    .detail-section h3 { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); margin-bottom: 10px; }
+    .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 16px; }
+    .detail-field label { display: block; font-size: 11px; color: var(--muted); }
+    .detail-field span, .detail-field p { display: block; font-size: 13px; color: var(--text); font-weight: 600; margin: 0; }
+    .detail-list-label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .detail-list { margin: 0; padding-left: 18px; font-size: 13px; color: var(--text); display: grid; gap: 2px; }
+    .detail-muted { color: var(--muted); font-size: 13px; margin: 0; }
+    .partner-card { cursor: pointer; }
+    @media (max-width: 560px) { .detail-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container nav">
+      <a href="/index.html" class="brand" aria-label="SOU + BLU - início">
+        <img class="brand-mark" src="/logo-mark.png" alt="SOU + BLU">
+        <span class="brand-name">SOU <b>+</b> BLU</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div id="adminGate" class="admin-gate">
+      <h1>Área interna</h1>
+      <p class="admin-status">Digite o token de administrador para ver os cadastros de parceiros.</p>
+      <input type="password" id="adminTokenInput" placeholder="Token de administrador" autocomplete="off">
+      <button type="button" class="btn btn-primary" id="adminEnterBtn">Entrar</button>
+      <p id="adminGateStatus" class="admin-status"></p>
+    </div>
+
+    <div id="adminContent" class="admin-wrap" hidden>
+      <div class="admin-head">
+        <h1>Cadastros de parceiros</h1>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button type="button" class="btn btn-outline btn-small" id="adminRefreshBtn">Atualizar</button>
+          <button type="button" class="btn btn-outline btn-small" id="adminLogoutBtn">Sair</button>
+        </div>
+      </div>
+      <p id="adminListStatus" class="admin-status"></p>
+
+      <div class="board">
+        <section class="board-col" data-status="pendente">
+          <div class="board-col-head">
+            <h2>Pendentes</h2>
+            <span class="board-count" data-count="pendente">0</span>
+          </div>
+          <div class="board-cards" data-column="pendente"></div>
+        </section>
+
+        <section class="board-col" data-status="aprovado">
+          <div class="board-col-head">
+            <h2>Aprovados</h2>
+            <span class="board-count" data-count="aprovado">0</span>
+          </div>
+          <p class="board-hint">Ao mover um cartão para cá, um e-mail é criado automaticamente como usuário parceiro na Sou+Blu.</p>
+          <div class="board-cards" data-column="aprovado"></div>
+        </section>
+
+        <section class="board-col" data-status="recusado">
+          <div class="board-col-head">
+            <h2>Recusados</h2>
+            <span class="board-count" data-count="recusado">0</span>
+          </div>
+          <div class="board-cards" data-column="recusado"></div>
+        </section>
+      </div>
+    </div>
+
+    <div id="detailOverlay" class="detail-overlay" hidden>
+      <div class="detail-modal">
+        <div class="detail-modal-head">
+          <h2 id="detailName"></h2>
+          <button type="button" class="detail-close" id="detailCloseBtn" aria-label="Fechar">&times;</button>
+        </div>
+        <div id="detailBody" class="detail-body"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const gate = document.getElementById('adminGate');
+    const content = document.getElementById('adminContent');
+    const tokenInput = document.getElementById('adminTokenInput');
+    const enterBtn = document.getElementById('adminEnterBtn');
+    const gateStatus = document.getElementById('adminGateStatus');
+    const listStatus = document.getElementById('adminListStatus');
+    const refreshBtn = document.getElementById('adminRefreshBtn');
+    const logoutBtn = document.getElementById('adminLogoutBtn');
+    const columns = document.querySelectorAll('.board-cards');
+    const counts = document.querySelectorAll('.board-count');
+
+    const STORAGE_KEY = 'blu-admin-token';
+    let currentToken = null;
+    let records = [];
+
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = value ?? '';
+      return div.innerHTML;
+    }
+
+    function cardHtml(record) {
+      const bits = [
+        record.city && escapeHtml(record.city),
+        record.contactTime && `Contato: ${escapeHtml(record.contactTime)}`,
+      ].filter(Boolean).join(' · ');
+      return `
+        <div class="partner-card" draggable="true" data-id="${escapeHtml(record.id)}">
+          <strong>${escapeHtml(record.name)}</strong>
+          <small class="card-doc">${escapeHtml(record.document)}</small>
+          <small>${escapeHtml(record.commercialPhone)} · ${escapeHtml(record.commercialEmail)}</small>
+          ${bits ? `<small>${bits}</small>` : ''}
+        </div>
+      `;
+    }
+
+    function render() {
+      const grouped = { pendente: [], aprovado: [], recusado: [] };
+      records.forEach(record => {
+        const status = grouped[record.status] ? record.status : 'pendente';
+        grouped[status].push(record);
+      });
+
+      columns.forEach(column => {
+        const status = column.dataset.column;
+        const items = grouped[status].sort((a, b) => (b.id || 0) - (a.id || 0));
+        column.innerHTML = items.length
+          ? items.map(cardHtml).join('')
+          : '<p class="board-empty">Nenhum cadastro aqui.</p>';
+      });
+
+      counts.forEach(el => {
+        el.textContent = grouped[el.dataset.count].length;
+      });
+
+      attachDragHandlers();
+    }
+
+    function attachDragHandlers() {
+      document.querySelectorAll('.partner-card').forEach(card => {
+        card.addEventListener('dragstart', event => {
+          event.dataTransfer.setData('text/plain', card.dataset.id);
+          card.classList.add('dragging');
+        });
+        card.addEventListener('dragend', () => card.classList.remove('dragging'));
+        card.addEventListener('click', () => {
+          const record = records.find(item => String(item.id) === String(card.dataset.id));
+          if (record) openDetail(record);
+        });
+      });
+    }
+
+    const detailOverlay = document.getElementById('detailOverlay');
+    const detailName = document.getElementById('detailName');
+    const detailBody = document.getElementById('detailBody');
+    const detailCloseBtn = document.getElementById('detailCloseBtn');
+
+    function statusLabel(status) {
+      return { pendente: 'Pendente', aprovado: 'Aprovado', recusado: 'Recusado' }[status] || status;
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '—';
+      const date = new Date(iso);
+      return isNaN(date) ? iso : date.toLocaleString('pt-BR');
+    }
+
+    function detailField(label, value) {
+      if (value === null || value === undefined || value === '') return '';
+      return `<div class="detail-field"><label>${escapeHtml(label)}</label><span>${escapeHtml(value)}</span></div>`;
+    }
+
+    function detailListSection(label, items) {
+      if (!items.length) return '';
+      return `<div><label class="detail-list-label">${escapeHtml(label)}</label><ul class="detail-list">${items.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></div>`;
+    }
+
+    function fontedataHtml(record) {
+      const fd = record.fontedataResult;
+      if (!fd) {
+        return '<p class="detail-muted">Nenhuma consulta de CNPJ registrada para este cadastro.</p>';
+      }
+      const fields = [
+        detailField('Razão social', fd.razaoSocial),
+        detailField('Nome fantasia', fd.nomeFantasia),
+        detailField('Situação cadastral', fd.situacaoCadastral),
+        detailField('Porte', fd.porte),
+        detailField('Tipo', fd.tipoEmpresa),
+        detailField('Data de fundação', fd.dataFundacao),
+        detailField('Natureza jurídica', fd.naturezaJuridicaDescricao),
+        detailField('CNAE', fd.cnaeDescricao ? `${fd.cnaeDescricao}${fd.cnaeCodigo ? ' (' + fd.cnaeCodigo + ')' : ''}` : null),
+        detailField('Opção Simples', fd.opcaoSimples),
+        detailField('Opção MEI', fd.opcaoMEI),
+        detailField('Faixa de faturamento', fd.faixaFaturamento),
+        detailField('Faturamento presumido', fd.faturamentoPresumido),
+        detailField('Faturamento médio (CNAE)', fd.faturamentoMedioCNAE),
+        detailField('Faixa de funcionários', fd.faixaFuncionarios),
+        detailField('Filiais', fd.quantidadeFiliais),
+      ].join('');
+
+      const socios = detailListSection('Sócios', (fd.socios || []).map(s => [s.nome, s.cargo].filter(Boolean).join(' — ')));
+      const enderecos = detailListSection('Endereços', (fd.enderecos || []).map(e =>
+        `${[e.logradouro, e.numero, e.complemento].filter(Boolean).join(', ')} — ${[e.bairro, e.cidade, e.uf].filter(Boolean).join(', ')} — CEP ${e.cep || '—'}`
+      ));
+      const telefones = detailListSection('Telefones', (fd.telefones || []).map(t => [t.telefoneComDDD, t.tipoTelefone].filter(Boolean).join(' — ')));
+      const emails = detailListSection('E-mails (Receita)', (fd.emails || []).map(e => e.enderecoEmail).filter(Boolean));
+      const filiais = detailListSection('Filiais', (fd.filiais || []).map(f => `${f.razaoSocial || ''} — CNPJ ${f.cnpj || '—'} (${f.uf || ''})`));
+
+      return `
+        <div class="detail-grid">${fields}</div>
+        ${socios}${enderecos}${telefones}${emails}${filiais}
+        <p class="detail-muted">Consultado em: ${escapeHtml(formatDate(record.fontedataConsultadoEm))}</p>
+      `;
+    }
+
+    function openDetail(record) {
+      detailName.textContent = record.name;
+      detailBody.innerHTML = `
+        <div class="detail-section">
+          <h3>Cadastro</h3>
+          <div class="detail-grid">
+            ${detailField('Documento', record.document)}
+            ${detailField('Status', statusLabel(record.status))}
+            ${detailField('Enviado em', formatDate(record.createdAt))}
+            ${detailField('Cidade', record.city)}
+            ${detailField('Telefone comercial', record.commercialPhone)}
+            ${detailField('WhatsApp', record.whatsappPhone)}
+            ${detailField('E-mail comercial', record.commercialEmail)}
+            ${detailField('E-mail financeiro', record.financialEmail)}
+            ${detailField('Melhor horário para contato', record.contactTime)}
+            ${detailField('Já trabalha no comercial', record.worksCommercial)}
+            ${detailField('Possui endereço', record.hasAddress)}
+            ${detailField('Experiência com crédito', record.creditExperience)}
+          </div>
+          ${record.message ? `<div class="detail-field" style="margin-top:10px;"><label>Mensagem</label><p>${escapeHtml(record.message)}</p></div>` : ''}
+        </div>
+        <div class="detail-section">
+          <h3>Consulta CNPJ (FonteData)</h3>
+          ${fontedataHtml(record)}
+        </div>
+        <div class="detail-section">
+          <h3>Acesso Sou+Blu</h3>
+          ${soubluHtml(record)}
+        </div>
+      `;
+      detailOverlay.hidden = false;
+    }
+
+    function soubluHtml(record) {
+      if (record.soubluError && !record.soubluUserId) {
+        return `<p class="detail-muted">Falha ao criar o acesso: ${escapeHtml(record.soubluError)}</p>`;
+      }
+      if (!record.soubluUserId) {
+        return '<p class="detail-muted">Nenhum acesso criado ainda (aprove o cadastro para gerar automaticamente).</p>';
+      }
+      return `
+        <div class="detail-grid">
+          ${detailField('ID do usuário', record.soubluUserId)}
+          ${detailField('Login', record.commercialEmail)}
+          ${detailField('Senha temporária', record.soubluTempPassword)}
+          ${detailField('Criado em', formatDate(record.soubluSyncedAt))}
+        </div>
+        <p class="detail-muted">A senha só aparece aqui até ser trocada pelo parceiro. Repasse manualmente por WhatsApp/e-mail.</p>
+      `;
+    }
+
+    function closeDetail() {
+      detailOverlay.hidden = true;
+    }
+
+    detailCloseBtn.addEventListener('click', closeDetail);
+    detailOverlay.addEventListener('click', event => { if (event.target === detailOverlay) closeDetail(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && !detailOverlay.hidden) closeDetail(); });
+
+    document.querySelectorAll('.board-col').forEach(col => {
+      col.addEventListener('dragover', event => {
+        event.preventDefault();
+        col.classList.add('drag-over');
+      });
+      col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+      col.addEventListener('drop', async event => {
+        event.preventDefault();
+        col.classList.remove('drag-over');
+        const id = event.dataTransfer.getData('text/plain');
+        const newStatus = col.dataset.status;
+        const record = records.find(item => String(item.id) === String(id));
+        if (!record || record.status === newStatus) return;
+
+        const previousStatus = record.status;
+        record.status = newStatus;
+        render();
+
+        try {
+          const response = await fetch('/api/parceiros.php', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'X-Admin-Token': currentToken },
+            body: JSON.stringify({ id, status: newStatus }),
+          });
+          if (!response.ok) throw new Error();
+          const data = await response.json();
+          if (newStatus === 'aprovado' && data.soublu) {
+            if (data.soublu.ok && data.soublu.tempPassword) {
+              record.soubluUserId = data.soublu.userId;
+              record.soubluTempPassword = data.soublu.tempPassword;
+              listStatus.textContent = `Acesso Sou+Blu criado! Login: ${record.commercialEmail} · Senha temporária: ${data.soublu.tempPassword} (repasse ao parceiro e peça para trocar).`;
+            } else if (!data.soublu.ok) {
+              listStatus.textContent = `Aprovado, mas não foi possível criar o acesso na Sou+Blu: ${data.soublu.error || 'erro desconhecido'}. Veja detalhes no cartão.`;
+            }
+          }
+        } catch {
+          record.status = previousStatus;
+          render();
+          listStatus.textContent = 'Não foi possível salvar essa mudança. Tente de novo.';
+        }
+      });
+    });
+
+    async function loadRecords(token) {
+      listStatus.textContent = 'Carregando...';
+      try {
+        const response = await fetch('/api/parceiros.php', { headers: { 'X-Admin-Token': token } });
+        if (response.status === 401) {
+          sessionStorage.removeItem(STORAGE_KEY);
+          content.hidden = true;
+          gate.hidden = false;
+          gateStatus.textContent = 'Token inválido.';
+          return;
+        }
+        const data = await response.json();
+        if (!data.ok) {
+          listStatus.textContent = data.error || 'Não foi possível carregar os cadastros.';
+          return;
+        }
+        records = data.records || [];
+        listStatus.textContent = `${records.length} cadastro(s). Arraste os cartões entre as colunas para mudar o status.`;
+        render();
+      } catch (error) {
+        listStatus.textContent = 'Erro ao carregar os cadastros.';
+      }
+    }
+
+    function enter(token) {
+      if (!token) return;
+      currentToken = token;
+      sessionStorage.setItem(STORAGE_KEY, token);
+      gate.hidden = true;
+      content.hidden = false;
+      loadRecords(token);
+    }
+
+    enterBtn.addEventListener('click', () => enter(tokenInput.value.trim()));
+    tokenInput.addEventListener('keydown', event => { if (event.key === 'Enter') enter(tokenInput.value.trim()); });
+    refreshBtn.addEventListener('click', () => loadRecords(currentToken));
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem(STORAGE_KEY);
+      currentToken = null;
+      content.hidden = true;
+      gate.hidden = false;
+      tokenInput.value = '';
+    });
+
+    const savedToken = sessionStorage.getItem(STORAGE_KEY);
+    if (savedToken) enter(savedToken);
+  </script>
+</body>
+</html>
