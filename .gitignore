@@ -4,3 +4,7 @@
 
 # Dependências (se algum dia adicionar um backend/function com package.json)
 node_modules/
+
+# Config local do PHP embutido (php -S), específica desta máquina
+php-local.ini
+php-server.log

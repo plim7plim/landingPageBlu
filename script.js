@@ -55,28 +55,9 @@ document.querySelectorAll('.solution-card').forEach(card => {
   const link = card.querySelector('a');
   const product = card.querySelector('h3').textContent;
   link.setAttribute('aria-label', 'Conversar sobre ' + product);
-  link.addEventListener('click', () => {
-    if (validPhone) whatsappLink.href = whatsappUrl('Olá! Gostaria de saber mais sobre ' + product + '.');
-  });
 });
-const whatsappLink = document.getElementById('whatsappLink');
-const contactStatus = document.getElementById('contact-status');
 const validPhone = /^[1-9]\d{9,14}$/.test(CONFIG.whatsapp);
 const whatsappUrl = message => 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(message);
-if (whatsappLink && contactStatus) {
-  if (validPhone) {
-    whatsappLink.href = whatsappUrl('Olá! Gostaria de conhecer as opções de crédito da SOU + BLU.');
-    whatsappLink.target = '_blank';
-    whatsappLink.rel = 'noopener noreferrer';
-    contactStatus.textContent = 'Você será direcionado ao WhatsApp.';
-  } else {
-    whatsappLink.setAttribute('aria-disabled', 'true');
-    whatsappLink.addEventListener('click', event => {
-      event.preventDefault();
-      contactStatus.textContent = 'Nosso WhatsApp estará disponível em breve. Agradecemos seu interesse!';
-    });
-  }
-}
 if (CONFIG.videoUrl) {
   try {
     const url = new URL(CONFIG.videoUrl);
@@ -226,7 +207,8 @@ if (partnerForm && partnerFormStatus) {
   });
 }
 
-// Entradas progressivas: o conteúdo continua visível sem JavaScript.
+// Revelação progressiva por seção ao rolar: cada bloco aparece inteiro,
+// sem escalonar item por item. O conteúdo continua visível sem JavaScript.
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let revealObserver;
 function configureReveals() {
@@ -240,7 +222,7 @@ function configureReveals() {
       revealObserver.unobserve(entry.target);
     });
   }, { threshold: 0.08 });
-  document.querySelectorAll('.section-heading, .solution-card, .benefit, .step, .why-copy, .about-mark, .video-heading, .accordion details, .contact-box, .partners-form').forEach(element => {
+  document.querySelectorAll('.section-heading, .about-mark, .video-heading, .solutions-grid, .benefits, .steps-grid, .accordion, .partners-form').forEach(element => {
     element.classList.add('reveal-item');
     // Não ocultar conteúdo que já está na tela ou acima dela.
     if (element.getBoundingClientRect().top < innerHeight) return;
@@ -250,6 +232,16 @@ function configureReveals() {
 }
 configureReveals();
 motionPreference.addEventListener('change', configureReveals);
+
+// A navegação por teclado nunca deixa o foco em um elemento oculto.
+document.addEventListener('focusin', event => {
+  const element = event.target.closest('.reveal-pending');
+  if (element) {
+    element.classList.remove('reveal-pending');
+    revealObserver?.unobserve(element);
+  }
+});
+
 const footerLegal = document.getElementById('footerLegal');
 const footerLegalToggle = document.getElementById('footerLegalToggle');
 if (footerLegal && footerLegalToggle) {
@@ -273,12 +265,3 @@ if (footerLegal && footerLegalToggle) {
     footerLegalToggle.setAttribute('aria-expanded', String(!collapsed));
   });
 }
-
-// A navegação por teclado nunca deixa o foco em um elemento oculto.
-document.addEventListener('focusin', event => {
-  const element = event.target.closest('.reveal-pending');
-  if (element) {
-    element.classList.remove('reveal-pending');
-    revealObserver?.unobserve(element);
-  }
-});
