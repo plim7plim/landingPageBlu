@@ -11,6 +11,7 @@
 //         também protegido pelo mesmo token.
 
 require __DIR__ . '/../config.php';
+require __DIR__ . '/lib/mailer.php';
 require __DIR__ . '/lib/soublu.php';
 
 const STATUSES = ['pendente', 'aprovado', 'recusado'];

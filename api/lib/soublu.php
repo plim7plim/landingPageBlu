@@ -127,5 +127,7 @@ function soubluCreateParceiro(array $record): array {
   ];
   soubluRest('POST', 'partners', $partnerPayload);
 
+  sendApprovalEmail($record, $email, $tempPassword);
+
   return ['user_id' => $userId, 'temp_password' => $tempPassword];
 }

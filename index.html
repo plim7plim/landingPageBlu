@@ -1,463 +1,788 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SOU + BLU Promotora de Crédito. Encontre opções de crédito de forma simples, segura e com atendimento especializado.">
-  <title>SOU + BLU · Crédito para você</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="SOU + BLU Promotora de Crédito. Especialistas em crédito consignado, empréstimo e refinanciamento, com atendimento simples, seguro e especializado."
+    />
+    <title>SOU + BLU · Crédito Consignado e Empréstimo</title>
 
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="alternate icon" href="favicon.png">
-  <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="icon" type="image/png" href="imagens/favicon.png" />
+    <link rel="alternate icon" href="imagens/favicon.png" />
+    <link rel="apple-touch-icon" href="imagens/favicon.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-  <header class="header" >
-  <div class="container nav">
+    <header class="header landing-header">
+      <div class="container nav">
+        <a href="#inicio" class="brand" aria-label="SOU + BLU - início">
+          <img class="brand-logo" src="imagens/image.png" alt="SOU + BLU" />
+        </a>
 
-    <!-- Logo -->
-    <a href="#inicio" class="brand" aria-label="SOU + BLU - início">
-      <img class="brand-mark" src="logo-mark.png" alt="SOU + BLU">
-      <span class="brand-name">SOU <b>+</b> BLU</span>
-    </a>
-
-    <!-- Menu -->
-    <nav class="desktop-nav" aria-label="Navegação principal">
-      <a href="#inicio" class="active">Início</a>
-      <a href="#solucoes">Soluções</a>
-      <a href="#como-funciona">Como funciona</a>
-      <a href="#duvidas">Dúvidas</a>
-      <a href="#seja-parceiro">Seja parceiro</a>
-    </nav>
-
-    <!-- Ações -->
-    <div class="nav-actions">
-      <a class="nav-contact" href="https://soumaisblu.com.br/index.html" target="_blank" rel="noopener noreferrer">
-        <span class="nav-contact-icon">↗</span>
-        <span>Faça login na Sou + Blu</span>
-      </a>
-
-      <button
-        class="menu-btn"
-        id="menuBtn" type="button" aria-controls="mobileMenu"
-        aria-label="Abrir menu"
-        aria-expanded="false"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-
-  </div>
-
-  <!-- Menu mobile -->
-  <nav class="mobile-menu" id="mobileMenu" aria-label="Navegação móvel">
-    <a href="#inicio">
-      <span>01</span>
-      Início
-    </a>
-
-    <a href="#solucoes">
-      <span>02</span>
-      Soluções
-    </a>
-
-    <a href="#como-funciona">
-      <span>03</span>
-      Como funciona
-    </a>
-
-    <a href="#duvidas">
-      <span>04</span>
-      Dúvidas
-    </a>
-
-    <a href="#seja-parceiro">
-      <span>05</span>
-      Seja parceiro
-    </a>
-
-    <a href="https://soumaisblu.com.br/index.html" target="_blank" rel="noopener noreferrer" class="mobile-contact">
-      Faça login na Sou + Blu
-      <b>→</b>
-    </a>
-  </nav>
-</header>
-  <main id="conteudo">
-    <section class="hero" id="inicio">
-      <div class="container hero-grid">
-        <div class="hero-copy">
-          <span class="eyebrow"><i></i> Crédito de um jeito mais simples</span>
-
-          <h1>Crédito que combina com <span>o que você precisa.</span></h1>
-
-          <p>
-            Conte com a SOU + BLU para encontrar opções de crédito
-            de forma simples, transparente e com atendimento próximo.
-          </p>
-
-          <div class="hero-actions">
-            <a href="#contato" class="btn btn-primary">Falar com um especialista <span>→</span></a>
-            <a href="#solucoes" class="text-link">Conhecer soluções <span>↓</span></a>
-          </div>
-
-          <div class="trust-row">
-            <div class="trust-item">
-              <strong>Atendimento</strong>
-              <small>especializado</small>
-            </div>
-            <div class="divider"></div>
-            <div class="trust-item">
-              <strong>Processo</strong>
-              <small>simples e claro</small>
-            </div>
-            <div class="divider"></div>
-            <div class="trust-item">
-              <strong>Segurança</strong>
-              <small>em primeiro lugar</small>
-            </div>
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="navMenu"
+          hidden
+        >
+          Menu <span aria-hidden="true">☰</span>
+        </button>
+        <div class="nav-menu" id="navMenu">
+          <nav class="nav-links" aria-label="Navegação principal">
+            <a href="#consignado">Consignado</a>
+            <a href="#emprestimo">Empréstimo</a>
+            <a href="#refinanciamento">Refinanciamento</a>
+            <a href="#seguranca">Segurança</a>
+            <a href="#contato">Fale conosco</a>
+          </nav>
+          <div class="nav-actions">
+            <a class="btn btn-primary" href="#seja-parceiro">Seja parceiro</a>
+            <a
+              class="nav-contact"
+              href="https://soumaisblu.com.br/index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>Área do parceiro</span>
+            </a>
           </div>
         </div>
+      </div>
+    </header>
+    <main id="conteudo">
+      <section class="hero" id="inicio" aria-labelledby="hero-title">
+        <svg class="plus-mark plus-mark--hero" viewBox="-4 -4 108 108" aria-hidden="true"><path d="M34 0H66V34H100V66H66V100H34V66H0V34H34Z" fill="currentColor" stroke="currentColor" stroke-width="7" stroke-linejoin="round" /></svg>
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <span class="eyebrow">Grupo BLU · Desde 2019</span>
+            <h1 id="hero-title">Crédito consignado.<br /><span>Orientação em cada etapa.</span></h1>
+            <p class="hero-lead">
+              Consignado, empréstimo ou refinanciamento: conheça as opções para o seu perfil com a
+              equipe SOU + BLU.
+            </p>
+            <div class="hero-actions">
+              <a href="#contato" class="btn btn-primary">Falar com um especialista</a>
+              <a href="#solucoes" class="text-link">Conhecer as soluções</a>
+            </div>
+            <p class="hero-note">
+              A aprovação e as condições do crédito dependem da instituição financeira.
+            </p>
+          </div>
+          <div class="hero-stage" aria-hidden="true">
+            <span class="hero-stage-ring"></span>
+            <div class="hero-card-back"></div>
 
-        <div class="hero-visual" aria-hidden="true">
-          <div class="main-card">
-            <div class="card-top">
-              <span>SEU PRÓXIMO PASSO</span>
+            <div class="hero-card">
+              <img class="hero-card-logo" src="imagens/image.png" alt="" />
+              <h3>Encontre uma opção <span>para você.</span></h3>
+              <div class="hero-card-option">
+                <span class="hero-card-chip">R$</span>
+                <div>
+                  <small>Opções de crédito</small>
+                  <strong>Consignado, empréstimo e refinanciamento</strong>
+                </div>
+              </div>
+              <p class="hero-card-note">Sujeito à análise da instituição financeira.</p>
             </div>
 
-            <h3>Encontre uma opção<br><span>para você.</span></h3>
-
-            <div class="credit-box">
-              <div class="mini-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9v0M18 15v0"/></svg>
-              </div>
+            <div class="hero-float hero-float-safe">
+              <span class="hero-float-icon"
+                ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg
+              ></span>
               <div>
-                <small>Opções de crédito</small>
-                <strong>Do seu jeito</strong>
+                <strong>Atendimento seguro</strong>
+                <small>Fale com nossa equipe</small>
+              </div>
+            </div>
+            <div class="hero-float hero-float-credit">
+              <span class="hero-float-icon hero-float-icon--text">R$</span>
+              <div>
+                <strong>Crédito consignado</strong>
+                <small>Nossa especialidade</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-band" aria-label="O Grupo BLU em números">
+        <div class="container stats">
+          <div class="stat">
+            <strong>2019</strong>
+            <span>Ano em que o Grupo BLU começou a atuar</span>
+          </div>
+          <div class="stat">
+            <strong>6</strong>
+            <span>Instituições financeiras parceiras</span>
+          </div>
+          <div class="stat">
+            <strong>3</strong>
+            <span>Modalidades de crédito</span>
+          </div>
+          <div class="stat">
+            <strong>4</strong>
+            <span>Empresas no Grupo BLU</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="trustbar" aria-label="Instituições financeiras parceiras">
+        <div class="container trustbar-inner">
+          <span class="trustbar-label">Instituições financeiras parceiras</span>
+          <div class="trustbar-list">
+            <span>Banco BMG</span>
+            <span>Banco Pan</span>
+            <span>Banco C6 Consignado</span>
+            <span>Banco Mercantil do Brasil</span>
+            <span>SAK Fácil</span>
+            <span>TIM</span>
+          </div>
+          <p class="trustbar-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.5 3.1 8.3 7.5 9.5 4.4-1.2 7.5-5 7.5-9.5V6L12 3Z" /><path d="m9 12 2.2 2.2L15.5 10" /></svg>
+            Atuamos como correspondente bancário, atividade regulada pelo Banco Central do Brasil.
+          </p>
+        </div>
+      </section>
+
+      <section class="service section" aria-labelledby="service-title">
+        <div class="container section-head">
+          <div class="section-heading">
+            <span class="eyebrow">Atendimento SOU + BLU</span>
+            <h2 id="service-title">Antes de decidir,<br />entenda suas opções.</h2>
+          </div>
+          <div class="section-head-text">
+            <p>
+              Você conta o que precisa. Nossa equipe explica as modalidades disponíveis e os
+              documentos necessários para dar andamento ao atendimento.
+            </p>
+            <a class="text-link" href="#como-funciona">Veja as etapas do atendimento</a>
+          </div>
+          </div>
+        <div class="container">
+          <div class="service-panel">
+            <div class="service-visual" aria-hidden="true">
+              <span class="service-visual-ring"></span>
+              <div class="chat">
+                <div class="chat-head">
+                  <img class="chat-logo" src="imagens/image.png" alt="" />
+                  <span>Atendimento</span>
+                </div>
+                <div class="chat-body">
+                  <p class="bubble bubble-out">Quero entender as opções de crédito.</p>
+                  <p class="bubble bubble-in">
+                    Claro! Me conta o que você precisa e eu explico as modalidades disponíveis.
+                  </p>
+                  <p class="bubble bubble-in">Também aviso quais documentos serão necessários.</p>
+                  <p class="bubble bubble-in bubble-typing"><i></i><i></i><i></i></p>
+                </div>
+              </div>
+              <div class="service-visual-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                Fale com a nossa equipe
+              </div>
+            </div>
+            <div class="hero-visual">
+            <div
+              class="hero-carousel"
+              id="heroCarousel"
+              role="region"
+              aria-label="Nosso atendimento"
+              aria-roledescription="carrossel"
+            >
+              <div class="hero-carousel-track">
+                <div class="main-card">
+                  <span class="main-card-label">01 / Atendimento</span>
+                  <h2>Você conta o que precisa,<br />a gente explica as opções.</h2>
+                  <p>
+                    Nossa equipe apresenta as modalidades disponíveis e informa quais documentos
+                    serão necessários.
+                  </p>
+                  <div class="main-card-foot">Do primeiro contato à contratação.</div>
+                </div>
+                <div class="main-card">
+                  <span class="main-card-label">02 / Especialidade</span>
+                  <h2>Consignado é o que<br />mais fazemos.</h2>
+                  <p>
+                    Também trabalhamos com empréstimo e refinanciamento, conforme o perfil de cada
+                    cliente.
+                  </p>
+                  <div class="main-card-foot">Veja as modalidades abaixo.</div>
+                </div>
+                <div class="main-card">
+                  <span class="main-card-label">03 / Condições</span>
+                  <h2>Quem define as<br />condições é o banco.</h2>
+                  <p>
+                    Taxas e prazos são das instituições financeiras e são apresentados antes da
+                    contratação.
+                  </p>
+                  <div class="main-card-foot">Tire suas dúvidas com a equipe.</div>
+                </div>
+                <div class="main-card">
+                  <span class="main-card-label">04 / Seus dados</span>
+                  <h2>Como usamos<br />os seus dados.</h2>
+                  <p>
+                    A Política de Privacidade explica para que usamos as informações e como falar
+                    com a gente sobre elas.
+                  </p>
+                  <div class="main-card-foot">
+                    <a href="politica-privacidade.html">Ler Política de Privacidade</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-controls">
+              <div class="hero-carousel-dots" id="heroCarouselDots" aria-label="Escolher painel">
+                <button type="button" class="is-active" aria-label="Painel 1: Atendimento">
+                  01
+                </button>
+                <button type="button" aria-label="Painel 2: Especialidade">02</button>
+                <button type="button" aria-label="Painel 3: Condições">03</button>
+                <button type="button" aria-label="Painel 4: Seus dados">04</button>
+              </div>
+              <button
+                type="button"
+                class="carousel-pause"
+                id="heroCarouselPause"
+                aria-pressed="false"
+              >
+                Pausar
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+      </section>
+
+      <section class="solutions section" id="solucoes" aria-labelledby="solutions-title">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">Soluções de crédito</span>
+            <h2 id="solutions-title">Consignado é a nossa especialidade.</h2>
+            <p>Veja com a equipe qual modalidade está disponível para você.</p>
+          </div>
+          <div class="solutions-grid">
+            <article class="solution-card featured" id="consignado">
+              <span class="icon-chip icon-chip--light" aria-hidden="true"
+                ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10 12 4l9 6" /><path d="M5 10v9M9.5 10v9M14.5 10v9M19 10v9" /><path d="M3 19h18" /></svg></span
+              >
+              <span class="card-tag">Principal modalidade</span>
+              <h3>Crédito consignado</h3>
+              <p>
+                Atendimento para esclarecer as condições e acompanhar as etapas da contratação do
+                consignado.
+              </p>
+              <ul class="check-list">
+                <li>Orientação sobre as condições e a documentação necessária</li>
+                <li>Acompanhamento das etapas, do contato à contratação</li>
+                <li>Aprovação sujeita à validação da margem consignável e à averbação pelo órgão pagador</li>
+              </ul>
+              <a class="btn btn-primary" href="#contato">Falar com um especialista</a>
+            </article>
+            <div class="solutions-secondary">
+              <article class="solution-card" id="emprestimo">
+                <span class="icon-chip icon-chip--light" aria-hidden="true"
+                  ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2" /><circle cx="12" cy="12" r="3" /><path d="M6 9h.01M18 15h.01" /></svg></span
+                >
+                <h3>Empréstimo</h3>
+                <p>Consulte as alternativas de empréstimo disponíveis para o seu perfil.</p>
+              </article>
+              <article class="solution-card" id="refinanciamento">
+                <span class="icon-chip icon-chip--light" aria-hidden="true"
+                  ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.9-4" /><path d="M4 4v5h5" /><path d="M4 13a8 8 0 0 0 14.9 4" /><path d="M20 20v-5h-5" /></svg></span
+                >
+                <h3>Refinanciamento</h3>
+                <p>Converse sobre as possibilidades de reorganizar seu crédito.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="steps section" id="como-funciona" aria-labelledby="steps-title">
+        <div class="container steps-layout">
+          <div class="section-heading">
+            <span class="eyebrow">Como funciona</span>
+            <h2 id="steps-title">O que acontece<br />depois do contato.</h2>
+          </div>
+          <ol class="steps-list">
+            <li>
+              <span>01</span>
+              <div>
+                <h3>Conte o que você precisa</h3>
+                <p>Você conversa com a equipe sobre a modalidade de crédito que procura.</p>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <h3>Conheça as possibilidades</h3>
+                <p>Receba orientação sobre as opções e a documentação necessária para a análise.</p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <h3>Avalie as condições</h3>
+                <p>Esclareça suas dúvidas antes de decidir pela contratação.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+      <section class="faq section" id="duvidas">
+        <div class="container faq-grid">
+          <div class="section-heading">
+            <span class="eyebrow">Dúvidas frequentes</span>
+            <h2>Antes de solicitar crédito.</h2>
+            <p>
+              Documentos, critérios e prazos variam conforme a modalidade e a instituição
+              financeira.
+            </p>
+          </div>
+
+          <div class="accordion">
+            <details open>
+              <summary>Quem pode solicitar crédito?</summary>
+              <p>
+                As condições e os critérios variam conforme o produto e a instituição responsável
+                pela análise. Nossa equipe pode orientar você.
+              </p>
+            </details>
+
+            <details>
+              <summary>Quais documentos são necessários?</summary>
+              <p>
+                A documentação depende da modalidade escolhida e da análise. Durante o atendimento,
+                informaremos o que será necessário.
+              </p>
+            </details>
+
+            <details>
+              <summary>Quanto tempo leva a análise?</summary>
+              <p>O prazo varia conforme o produto, a instituição e a documentação apresentada.</p>
+            </details>
+
+            <details>
+              <summary>A contratação é segura?</summary>
+              <p>
+                Trabalhamos para oferecer um atendimento transparente e responsável. Nunca
+                compartilhe senhas ou códigos de segurança com terceiros.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="security section" id="seguranca" aria-labelledby="security-title">
+        <div class="container section-head">
+          <div class="section-heading">
+            <span class="eyebrow">Segurança e canais oficiais</span>
+            <h2 id="security-title">Cuidados na hora de contratar.</h2>
+          </div>
+          <div class="section-head-text">
+            <p>Confira estas orientações e use só os canais oficiais para falar com a gente.</p>
+          </div>
+        </div>
+        <div class="container">
+          <div class="security-panel">
+            <div class="service-visual">
+              <span class="service-visual-ring" aria-hidden="true"></span>
+              <aside class="official" aria-labelledby="official-title">
+                <div class="official-head">
+                  <img class="chat-logo" src="imagens/image.png" alt="SOU + BLU" />
+                  <span class="official-badge" id="official-title"
+                    ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg
+                    >Canais oficiais</span
+                  >
+                </div>
+                <ul class="official-list">
+                  <li>
+                    <span>Telefone</span>
+                    <a href="tel:+556236025211">(62) 3602-5211</a>
+                  </li>
+                  <li>
+                    <span>Ouvidoria</span>
+                    <a href="mailto:ouvidoria@blupromotora.com.br">ouvidoria@blupromotora.com.br</a>
+                  </li>
+                  <li>
+                    <span>Instagram</span>
+                    <a href="https://www.instagram.com/blu.promotora" target="_blank" rel="noopener noreferrer">@blu.promotora</a>
+                  </li>
+                </ul>
+              </aside>
+              <div class="service-visual-chip" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2" /><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" /></svg>
+                Nunca compartilhe códigos
+              </div>
+            </div>
+            <ul class="security-tips">
+              <li>
+                <strong>Não compartilhe senhas ou códigos</strong>
+                <span>Nunca informe senhas, tokens ou códigos de segurança a terceiros.</span>
+              </li>
+              <li>
+                <strong>Confira as condições antes de contratar</strong>
+                <span>As condições são definidas pelas instituições financeiras e devem ser confirmadas e exibidas antes de qualquer contratação.</span>
+              </li>
+              <li>
+                <strong>A liberação é da instituição financeira</strong>
+                <span>Somos correspondente bancário: não realizamos análise de crédito, e o valor é liberado pela instituição financeira parceira.</span>
+              </li>
+              <li>
+                <strong>Em caso de dúvida, use os canais oficiais</strong>
+                <span>Se receber um contato que você não reconhece, confirme a informação por um dos canais oficiais desta seção.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact section" id="contato" aria-labelledby="contact-title">
+        <div class="container contact-grid">
+          <div class="section-heading">
+            <span class="eyebrow">Atendimento SOU + BLU</span>
+            <h2 id="contact-title">Vamos conversar sobre o crédito que você procura?</h2>
+            <p>
+              Fale com nossa equipe para consultar as opções e tirar suas dúvidas.
+            </p>
+          </div>
+          <div class="contact-action">
+            <a
+              class="btn btn-primary"
+              id="contactWhatsapp"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              hidden
+              >Conversar pelo WhatsApp</a
+            >
+            <a class="btn btn-primary" id="contactPhone" href="tel:+556236025211"
+              >Ligar para (62) 3602-5211</a
+            >
+            <p id="contactNote">Fale direto com a nossa equipe.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="partners section" id="seja-parceiro" aria-labelledby="partners-title">
+        <div class="container partners-grid">
+          <div class="section-heading partners-intro">
+            <span class="eyebrow">Para empresas e escritórios</span>
+            <h2 id="partners-title">Seja um parceiro SOU + BLU.</h2>
+            <p>
+              Preencha o cadastro para conversar com nossa equipe sobre a parceria. Os campos
+              indicados como obrigatórios são necessários para o envio.
+            </p>
+            <ol class="partner-steps">
+              <li>
+                <div>
+                  <strong>Você envia o cadastro</strong>
+                  <span>Leva poucos minutos. Só quatro campos são obrigatórios.</span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <strong>Nossa equipe analisa</strong>
+                  <span>Entramos em contato pelos dados informados para conversar sobre a parceria.</span>
+                </div>
+              </li>
+              <li>
+                <div>
+                  <strong>Você recebe o acesso</strong>
+                  <span>Com o cadastro aprovado, enviamos por e-mail o acesso à área do parceiro.</span>
+                </div>
+              </li>
+            </ol>
+            <p class="partners-login">
+              Já é parceiro?
+              <a
+                href="https://soumaisblu.com.br/index.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Acesse a área do parceiro</a
+              >
+            </p>
+          </div>
+
+          <form class="partners-form" id="partnerForm" novalidate>
+            <div class="form-group" role="group" aria-labelledby="group-data">
+              <h3 class="form-group-title" id="group-data">Seus dados</h3>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="partnerName"
+                    >Nome completo <span class="field-required">obrigatório</span></label
+                  >
+                  <input type="text" id="partnerName" name="name" autocomplete="name" required />
+                </div>
+                <div class="form-field">
+                  <label for="partnerDocument"
+                    >CNPJ/CPF <span class="field-required">obrigatório</span></label
+                  >
+                  <input
+                    type="text"
+                    id="partnerDocument"
+                    name="document"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    maxlength="18"
+                    placeholder="00.000.000/0000-00"
+                    required
+                  />
+                </div>
               </div>
             </div>
 
-            <div class="card-footer">
-              <small>Orientação personalizada</small>
-              <b>+ Simples</b>
+            <div class="form-group" role="group" aria-labelledby="group-contact">
+              <h3 class="form-group-title" id="group-contact">Contatos</h3>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="partnerCommercialPhone"
+                    >Contato comercial <span class="field-required">obrigatório</span></label
+                  >
+                  <input
+                    type="tel"
+                    id="partnerCommercialPhone"
+                    name="commercialPhone"
+                    inputmode="numeric"
+                    autocomplete="tel"
+                    maxlength="15"
+                    placeholder="(00) 00000-0000"
+                    required
+                  />
+                </div>
+                <div class="form-field">
+                  <label for="partnerWhatsappPhone">Contato WhatsApp</label>
+                  <input
+                    type="tel"
+                    id="partnerWhatsappPhone"
+                    name="whatsappPhone"
+                    inputmode="numeric"
+                    autocomplete="tel"
+                    maxlength="15"
+                    placeholder="(00) 00000-0000"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="partnerCommercialEmail"
+                    >E-mail comercial <span class="field-required">obrigatório</span></label
+                  >
+                  <input
+                    type="email"
+                    id="partnerCommercialEmail"
+                    name="commercialEmail"
+                    autocomplete="email"
+                    placeholder="nome@empresa.com.br"
+                    required
+                  />
+                </div>
+                <div class="form-field">
+                  <label for="partnerFinancialEmail">E-mail financeiro</label>
+                  <input
+                    type="email"
+                    id="partnerFinancialEmail"
+                    name="financialEmail"
+                    autocomplete="email"
+                    placeholder="financeiro@empresa.com.br"
+                  />
+                </div>
+              </div>
             </div>
-          </div>
+
+            <div class="form-group" role="group" aria-labelledby="group-profile">
+              <h3 class="form-group-title" id="group-profile">Perfil da operação</h3>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="partnerCity">Cidade / UF</label>
+                  <input
+                    type="text"
+                    id="partnerCity"
+                    name="city"
+                    autocomplete="address-level2"
+                    placeholder="Ex.: Goiânia / GO"
+                  />
+                </div>
+                <div class="form-field">
+                  <label for="partnerContactTime">Melhor horário para contato</label>
+                  <select id="partnerContactTime" name="contactTime">
+                    <option value="">Selecione</option>
+                    <option value="Manhã">Manhã</option>
+                    <option value="Tarde">Tarde</option>
+                    <option value="Noite">Noite</option>
+                    <option value="Qualquer horário">Qualquer horário</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-field">
+                  <label for="partnerWorksCommercial">Atualmente trabalha na área comercial?</label>
+                  <select id="partnerWorksCommercial" name="worksCommercial">
+                    <option value="">Selecione</option>
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label for="partnerHasAddress">Possui endereço físico?</label>
+                  <select id="partnerHasAddress" name="hasAddress">
+                    <option value="">Selecione</option>
+                    <option value="Sim">Sim</option>
+                    <option value="Não">Não</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="partnerCreditExperience">Já trabalhou no mercado de crédito?</label>
+                <select id="partnerCreditExperience" name="creditExperience">
+                  <option value="">Selecione</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" role="group" aria-labelledby="group-notes">
+              <h3 class="form-group-title" id="group-notes">Observações</h3>
+              <div class="form-field">
+                <label for="partnerMessage" class="sr-only">Observações</label>
+                <textarea
+                  id="partnerMessage"
+                  name="message"
+                  rows="4"
+                  placeholder="Conte um pouco sobre a sua operação, se quiser."
+                ></textarea>
+              </div>
+            </div>
+
+            <label class="form-checkbox">
+              <input type="checkbox" id="partnerTerms" name="terms" required />
+              <span
+                >Li e aceito os
+                <a href="termos.html" target="_blank">Termos e Condições de Uso</a>.</span
+              >
+            </label>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Enviar cadastro de parceiro</button>
+              <p id="partnerFormStatus" role="status"></p>
+              <p class="form-privacy">
+                Tratamos seus dados conforme a
+                <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>.
+              </p>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-top">
+        <div class="footer-brand-group">
+          <a href="#inicio" class="footer-brand">
+            <span class="footer-logo-frame" aria-hidden="true"
+              ><img class="footer-logo" src="imagens/blu-logo-branca.png" alt=""
+            /></span>
+            <span class="footer-logo-caption">Grupo BLU</span>
+          </a>
+          <p class="footer-copy">© 2026 SOU + BLU. Todos os direitos reservados.</p>
+        </div>
+        <div class="footer-social" aria-label="Redes sociais">
+          <a
+            href="https://www.linkedin.com/company/blu-promotora/posts/?feedView=all"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-btn"
+            aria-label="LinkedIn"
+            ><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5.001 2.5 2.5 0 0 1 0-5.001ZM3 9h4v12H3V9Zm7 0h3.8v1.71h.05c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.02-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V21h-4V9Z" /></svg
+            ><span class="sr-only">LinkedIn</span></a
+          >
+          <a
+            href="https://www.instagram.com/blu.promotora?igsi=MXY4amFsM3JyYW5pYw=="
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-btn"
+            aria-label="Instagram"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.3" cy="6.7" r="1" /></svg
+            ><span class="sr-only">Instagram</span></a
+          >
+          <a href="mailto:ouvidoria@blupromotora.com.br" class="social-btn" aria-label="E-mail"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 6.5 12 13l9-6.5" /></svg
+            ><span class="sr-only">E-mail</span></a
+          >
+          <a href="tel:+556236025211" class="social-btn" aria-label="Telefone"
+            ><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6.6 3h3.2l1.4 4.4-2.1 1.7a12 12 0 0 0 5.8 5.8l1.7-2.1 4.4 1.4v3.2c0 1-.8 1.6-1.8 1.5A17 17 0 0 1 5.1 4.8C5 3.8 5.6 3 6.6 3Z" /></svg
+            ><span class="sr-only">Telefone</span></a
+          >
         </div>
       </div>
-    </section>
-                   <!--Depois colocar o video bem aq quando tiver-->
-<section class="institutional-video" aria-labelledby="about-title">
-  <div class="container about-grid">
-    <div class="about-mark" aria-hidden="true"><span>SOU</span><strong>+ BLU</strong><small>CONEXÕES QUE ABREM POSSIBILIDADES</small></div>
-    <div class="video-heading"><span class="eyebrow">Perto de você, em cada etapa</span><h2 id="about-title">Antes do crédito,<br>uma boa <span>conversa.</span></h2><p>Seus planos têm uma história. Queremos ouvir a sua, explicar as possibilidades e ajudar você a dar o próximo passo com clareza.</p><a class="text-link" href="#como-funciona">Conheça nosso atendimento <span>↗</span></a></div>
-  </div>
-</section>
 
-    <section class="solutions section" id="solucoes">
       <div class="container">
-        <div class="section-heading centered">
-          <span class="eyebrow">Nossas soluções</span>
-          <h2>Encontre a opção que faz sentido para você.</h2>
-          <p>Converse com nossa equipe e conheça as possibilidades disponíveis para o seu perfil.</p>
-        </div>
-
-        <div class="solutions-grid">
-          <article class="solution-card">
-            <div class="solution-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.6"/><path d="M6 9v0M18 15v0"/></svg></div>
-            <h3>Empréstimo</h3>
-            <p>Consulte as opções disponíveis e encontre uma alternativa para seus planos.</p>
-            <a href="#contato">Saiba mais <span>→</span></a>
-          </article>
-
-          <article class="solution-card featured">
-            <div class="solution-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 19.5 6.5V11.5C19.5 16 16.3 19.6 12 20.9C7.7 19.6 4.5 16 4.5 11.5V6.5L12 3.5Z"/><path d="M9 12.2L11 14.2L15.2 10"/></svg></div>
-            <span class="card-tag">Conheça a opção</span>
-            <h3>Crédito consignado</h3>
-            <p>Uma opção de crédito com contratação orientada pela nossa equipe.</p>
-            <a href="#contato">Saiba mais <span>→</span></a>
-          </article>
-
-          <article class="solution-card">
-            <div class="solution-icon navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.6-4.6M4 5v4.5h4.5"/><path d="M4 13a8 8 0 0 0 14.6 4.6M20 19v-4.5h-4.5"/></svg></div>
-            <h3>Refinanciamento</h3>
-            <p>Avalie possibilidades para reorganizar seu crédito de acordo com sua necessidade.</p>
-            <a href="#contato">Saiba mais <span>→</span></a>
-          </article>
-
-          <article class="solution-card">
-            <div class="solution-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="18" cy="12" r="1.4" fill="currentColor" stroke="none"/></svg></div>
-            <h3>Outras opções</h3>
-            <p>Não encontrou o que procura? Fale com um especialista e tire suas dúvidas.</p>
-            <a href="#contato">Falar conosco <span>→</span></a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="why section">
-      <div class="container why-grid">
-        <div class="why-copy">
-          <span class="eyebrow">Por que a SOU + BLU?</span>
-          <h2>Mais do que crédito, <span>um atendimento de verdade.</span></h2>
+        <div class="footer-legal" id="footerLegal">
           <p>
-            Sabemos que cada pessoa tem uma necessidade diferente.
-            Por isso, nossa equipe acompanha você para explicar as opções
-            e ajudar na escolha do caminho mais adequado.
+            O Grupo Blu, atua desde 2019 como correspondente bancário, a plataforma Blu não realiza
+            análise de crédito, e a liberação do valor na conta do cliente é de responsabilidade
+            única e exclusiva das instituições financeiras parceiras. A aprovação de créditos
+            consignados descritos nesta plataforma está sujeita à validação da margem consignável e
+            à averbação por parte do órgão pagador. Já a aprovação do crédito referente ao produto
+            Antecipação do FGTS está sujeita à disponibilidade do saldo fornecido pela Caixa
+            Econômica Federal, bem como às políticas das instituições financeiras parceiras. Embora
+            a Blu trabalhe para democratizar o acesso ao crédito nas melhores condições e taxas de
+            juros praticadas no empréstimo consignado e no cartão de crédito consignado, tais
+            condições são determinadas pelas instituições financeiras parceiras, devendo ser
+            confirmadas e exibidas antes de qualquer contratação. Todo crédito deve ser utilizado de
+            forma consciente.
           </p>
-          <a href="#contato" class="btn btn-primary">Falar conosco <span>→</span></a>
+
+          <p>
+            CS CALL LTDA situada Rua 02, Qd B, Lt 04, SL 02, Vila Maia, CEP: 76632-064, Itaberaí,
+            Goiás, inscrita no CNPJ sob o nº. 59.327.226/0001-44, BLU PROMOTORA, situada AV Brasil,
+            nº 198, QD 15, Lt 0001, Muniz Falcão, Goianésia, Goiás, CEP 76.380-460, inscrita no CNPJ
+            sob o nº 44.702.171/0001-38, BLU INTERMEDIAÇÃO SERVIÇOS LTDA situada Rua S07, Qd 20,
+            Lote 05, Residencial Setor Oeste, Petrolina de Goiás, Goiás, CEP 75.480-000, inscrita no
+            CNPJ sob o nº 36.568.104/0001-44, SAK SERVIÇOS CADASTRAIS LTDA, situada na Avenida 15,
+            Quadra 24, Lote 08, Vila Leonor, Itaberaí, Goiás, CEP 76.630-000, inscrita no CNPJ sob o
+            nº 40.777.704/0001-90, atuam como correspondente bancário, atividade regulada pelo Banco
+            Central do Brasil, nos termos da Resolução nº 3.954, das instituições financeiras: Banco
+            BMG S/A, Banco Pan S/A, Banco Aki Capital, Franqueados da Help! Franchising, Banco
+            Mercantil do Brasil S/A, Banco C6 Consignado S/A, SAK Fácil, TIM S/A.
+          </p>
         </div>
-
-        <div class="benefits">
-          <div class="benefit">
-            <div class="benefit-number">01</div>
-            <div>
-              <h3>Atendimento próximo</h3>
-              <p>Você fala com uma equipe preparada para ouvir e orientar.</p>
-            </div>
-          </div>
-
-          <div class="benefit">
-            <div class="benefit-number">02</div>
-            <div>
-              <h3>Processo transparente</h3>
-              <p>Informações claras, sem promessas exageradas. As condições dependem da análise.</p>
-            </div>
-          </div>
-
-          <div class="benefit">
-            <div class="benefit-number">03</div>
-            <div>
-              <h3>Segurança</h3>
-              <p>Seus dados e informações são tratados com responsabilidade.</p>
-            </div>
-          </div>
-        </div>
+        <button
+          type="button"
+          class="footer-legal-toggle"
+          id="footerLegalToggle"
+          aria-expanded="true"
+          aria-controls="footerLegal"
+          hidden
+        >
+          Ler mais
+        </button>
       </div>
-    </section>
 
-    <section class="steps section" id="como-funciona">
-      <div class="container">
-        <div class="section-heading centered">
-          <span class="eyebrow">Como funciona</span>
-          <h2>É simples começar.</h2>
-          <p>Do primeiro contato até encontrar uma possibilidade para você.</p>
-        </div>
-
-        <div class="steps-grid">
-          <div class="step">
-            <span>01</span>
-            <div class="step-line"></div>
-            <h3>Fale com a gente</h3>
-            <p>Entre em contato e conte o que você precisa.</p>
-          </div>
-
-          <div class="step">
-            <span>02</span>
-            <div class="step-line"></div>
-            <h3>Analisamos as opções</h3>
-            <p>Verificamos as possibilidades disponíveis para seu perfil.</p>
-          </div>
-
-          <div class="step">
-            <span>03</span>
-            <h3>Escolha com clareza</h3>
-            <p>Você recebe orientação para tomar sua decisão.</p>
-          </div>
+      <div class="container footer-bottom">
+        <div class="footer-policy-links">
+          <a href="termos.html">Termos e Condições de Uso</a>
+          <a href="politicas.html">Política de Tratamento de Dados</a>
+          <a href="politica-privacidade.html">Política de Privacidade</a>
         </div>
       </div>
-    </section>
+    </footer>
 
-    <section class="faq section" id="duvidas">
-      <div class="container faq-grid">
-        <div class="section-heading">
-          <span class="eyebrow">Dúvidas frequentes</span>
-          <h2>Tem alguma dúvida?</h2>
-          <p>Confira algumas respostas rápidas. Se não encontrar o que procura, fale com nossa equipe.</p>
-        </div>
-
-        <div class="accordion">
-          <details open>
-            <summary>Quem pode solicitar crédito?</summary>
-            <p>As condições e os critérios variam conforme o produto e a instituição responsável pela análise. Nossa equipe pode orientar você.</p>
-          </details>
-
-          <details>
-            <summary>Quais documentos são necessários?</summary>
-            <p>A documentação depende da modalidade escolhida e da análise. Durante o atendimento, informaremos o que será necessário.</p>
-          </details>
-
-          <details>
-            <summary>Quanto tempo leva a análise?</summary>
-            <p>O prazo varia conforme o produto, a instituição e a documentação apresentada.</p>
-          </details>
-
-          <details>
-            <summary>A contratação é segura?</summary>
-            <p>Trabalhamos para oferecer um atendimento transparente e responsável. Nunca compartilhe senhas ou códigos de segurança com terceiros.</p>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <section class="partners section" id="seja-parceiro">
-      <div class="container partners-grid">
-        <div class="section-heading">
-          <span class="eyebrow">Cresça com a gente</span>
-          <h2>Seja um parceiro SOU + BLU.</h2>
-          <p>Cadastre sua empresa ou seu escritório e amplie as opções de crédito que você oferece aos seus clientes.</p>
-        </div>
-
-        <form class="partners-form" id="partnerForm" novalidate>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="partnerName">Nome completo</label>
-              <input type="text" id="partnerName" name="name" autocomplete="name" required>
-            </div>
-            <div class="form-field">
-              <label for="partnerDocument">CNPJ/CPF</label>
-              <input type="text" id="partnerDocument" name="document" inputmode="numeric" autocomplete="off" maxlength="18" placeholder="00.000.000/0000-00" required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-field">
-              <label for="partnerCommercialPhone">Contato comercial</label>
-              <input type="tel" id="partnerCommercialPhone" name="commercialPhone" inputmode="numeric" autocomplete="tel" maxlength="15" placeholder="(00) 00000-0000" required>
-            </div>
-            <div class="form-field">
-              <label for="partnerWhatsappPhone">Contato WhatsApp</label>
-              <input type="tel" id="partnerWhatsappPhone" name="whatsappPhone" inputmode="numeric" autocomplete="tel" maxlength="15" placeholder="(00) 00000-0000">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-field">
-              <label for="partnerCommercialEmail">E-mail comercial</label>
-              <input type="email" id="partnerCommercialEmail" name="commercialEmail" autocomplete="email" required>
-            </div>
-            <div class="form-field">
-              <label for="partnerFinancialEmail">E-mail financeiro</label>
-              <input type="email" id="partnerFinancialEmail" name="financialEmail" autocomplete="email">
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-field">
-              <label for="partnerCity">Cidade / UF</label>
-              <input type="text" id="partnerCity" name="city" autocomplete="address-level2">
-            </div>
-            <div class="form-field">
-              <label for="partnerContactTime">Melhor horário para contato</label>
-              <select id="partnerContactTime" name="contactTime">
-                <option value="">Selecione</option>
-                <option value="Manhã">Manhã</option>
-                <option value="Tarde">Tarde</option>
-                <option value="Noite">Noite</option>
-                <option value="Qualquer horário">Qualquer horário</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-field">
-              <label for="partnerWorksCommercial">Atualmente trabalha na área comercial?</label>
-              <select id="partnerWorksCommercial" name="worksCommercial">
-                <option value="">Selecione</option>
-                <option value="Sim">Sim</option>
-                <option value="Não">Não</option>
-              </select>
-            </div>
-            <div class="form-field">
-              <label for="partnerHasAddress">Possui endereço físico?</label>
-              <select id="partnerHasAddress" name="hasAddress">
-                <option value="">Selecione</option>
-                <option value="Sim">Sim</option>
-                <option value="Não">Não</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-field">
-            <label for="partnerCreditExperience">Já trabalhou no mercado de crédito?</label>
-            <select id="partnerCreditExperience" name="creditExperience">
-              <option value="">Selecione</option>
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </select>
-          </div>
-
-          <div class="form-field">
-            <label for="partnerMessage">Observações</label>
-            <textarea id="partnerMessage" name="message" rows="4"></textarea>
-          </div>
-
-          <label class="form-checkbox">
-            <input type="checkbox" id="partnerTerms" name="terms" required>
-            <span>Li e aceito os <a href="termos.html" target="_blank">Termos e Condições de Uso</a>.</span>
-          </label>
-
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Realizar cadastro <span>→</span></button>
-            <p id="partnerFormStatus" role="status"></p>
-          </div>
-        </form>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="footer">
-    <div class="container footer-top">
-      <div class="footer-brand-group">
-        <a href="#inicio" class="footer-brand">
-          <img class="footer-logo" src="blu-logo-branca.png" alt="Grupo BLU">
-          <span class="footer-logo-caption">Grupo BLU</span>
-        </a>
-        <p class="footer-copy">© 2026 SOU + BLU. Todos os direitos reservados.</p>
-      </div>
-      <div class="footer-social" aria-label="Redes sociais">
-        <a href="https://www.linkedin.com/company/blu-promotora/posts/?feedView=all" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="LinkedIn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-        </a>
-        <a href="https://www.instagram.com/blu.promotora?igsi=MXY4amFsM3JyYW5pYw==" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Instagram">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/></svg>
-        </a>
-        <a href="mailto:ouvidoria@blupromotora.com.br" class="social-btn" aria-label="E-mail">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
-        </a>
-        <a href="tel:+556236025211" class="social-btn" aria-label="Telefone">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        </a>
-      </div>
-    </div>
-
-    <div class="container">
-      <div class="footer-legal" id="footerLegal">
-        <p>O Grupo Blu, atua desde 2019 como correspondente bancário, a plataforma Blu não realiza análise de crédito, e a liberação do valor na conta do cliente é de responsabilidade única e exclusiva das instituições financeiras parceiras. A aprovação de créditos consignados descritos nesta plataforma está sujeita à validação da margem consignável e à averbação por parte do órgão pagador. Já a aprovação do crédito referente ao produto Antecipação do FGTS está sujeita à disponibilidade do saldo fornecido pela Caixa Econômica Federal, bem como às políticas das instituições financeiras parceiras. Embora a Blu trabalhe para democratizar o acesso ao crédito nas melhores condições e taxas de juros praticadas no empréstimo consignado e no cartão de crédito consignado, tais condições são determinadas pelas instituições financeiras parceiras, devendo ser confirmadas e exibidas antes de qualquer contratação. Todo crédito deve ser utilizado de forma consciente.</p>
-
-        <p>CS CALL LTDA situada Rua 02, Qd B, Lt 04, SL 02, Vila Maia, CEP: 76632-064, Itaberaí, Goiás, inscrita no CNPJ sob o nº. 59.327.226/0001-44, BLU PROMOTORA, situada AV Brasil, nº 198, QD 15, Lt 0001, Muniz Falcão, Goianésia, Goiás, CEP 76.380-460, inscrita no CNPJ sob o nº 44.702.171/0001-38, BLU INTERMEDIAÇÃO SERVIÇOS LTDA situada Rua S07, Qd 20, Lote 05, Residencial Setor Oeste, Petrolina de Goiás, Goiás, CEP 75.480-000, inscrita no CNPJ sob o nº 36.568.104/0001-44, SAK SERVIÇOS CADASTRAIS LTDA, situada na Avenida 15, Quadra 24, Lote 08, Vila Leonor, Itaberaí, Goiás, CEP 76.630-000, inscrita no CNPJ sob o nº 40.777.704/0001-90, atuam como correspondente bancário, atividade regulada pelo Banco Central do Brasil, nos termos da Resolução nº 3.954, das instituições financeiras: Banco BMG S/A, Banco Pan S/A, Banco Aki Capital, Franqueados da Help! Franchising, Banco Mercantil do Brasil S/A, Banco C6 Consignado S/A, SAK Fácil, TIM S/A.</p>
-      </div>
-      <button type="button" class="footer-legal-toggle" id="footerLegalToggle" aria-expanded="true" aria-controls="footerLegal" hidden>Ler mais</button>
-    </div>
-
-    <div class="container footer-bottom">
-      <div class="footer-policy-links">
-        <a href="termos.html">Termos e Condições de Uso</a>
-        <a href="politicas.html">Política de Tratamento de Dados</a>
-        <a href="politica-privacidade.html">Política de Privacidade</a>
-      </div>
-    </div>
-  </footer>
-
-  <script src="script.js" defer></script>
-</body>
+    <script src="script.js" defer></script>
+  </body>
 </html>
-

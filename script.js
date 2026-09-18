@@ -1,143 +1,219 @@
 // Edite somente estes campos quando os canais oficiais estiverem disponíveis.
 const CONFIG = {
-  whatsapp: "5562998406502", // Código do país + DDD + número. Apenas dígitos.
+  whatsapp: "", // Código do país + DDD + número, só dígitos. Vazio = botão de WhatsApp oculto.
   videoUrl: "", // URL de incorporação: https://www.youtube.com/embed/ID
 };
 
-const menuBtn = document.getElementById('menuBtn');
-const mobileMenu = document.getElementById('mobileMenu');
-const setMenu = (open, restoreFocus = false) => {
-  mobileMenu.classList.toggle('open', open);
-  if (open && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    mobileMenu.animate([{ opacity: 0, transform: 'translateY(-8px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 240, easing: 'ease-out' });
-  }
-  menuBtn.setAttribute('aria-expanded', String(open));
-  menuBtn.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
-  if (restoreFocus) menuBtn.focus();
-};
-menuBtn.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
-mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
-document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && menuBtn.getAttribute('aria-expanded') === 'true') setMenu(false, true);
-});
-document.addEventListener('click', event => {
-  if (!event.target.closest('.header')) setMenu(false);
-});
-matchMedia('(min-width: 901px)').addEventListener('change', event => { if (event.matches) setMenu(false); });
+const heroCarousel = document.getElementById("heroCarousel");
+const heroCarouselDots = document.getElementById("heroCarouselDots");
+const heroCarouselPause = document.getElementById("heroCarouselPause");
+if (heroCarousel && heroCarouselDots && heroCarouselPause) {
+  const track = heroCarousel.querySelector(".hero-carousel-track");
+  const slides = [...track.children];
+  const dots = [...heroCarouselDots.querySelectorAll("button")];
+  const carouselControls = heroCarouselPause.closest(".carousel-controls");
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  let activeIndex = 0;
+  let timer = null;
+  let isPaused = reducedMotion.matches;
 
-const navLinks = [...document.querySelectorAll('.desktop-nav a')];
-const sections = navLinks
-  .map(link => link.getAttribute('href'))
-  .filter(href => href && href.startsWith('#'))
-  .map(href => document.querySelector(href))
-  .filter(Boolean);
-let scheduled = false;
-function updateNavigation() {
-  let current = sections[0]?.id;
-  for (const section of sections) {
-    if (section.getBoundingClientRect().top <= 160) current = section.id;
+  function showSlide(index) {
+    activeIndex = (index + slides.length) % slides.length;
+    track.style.transform = `translateX(-${activeIndex * 100}%)`;
+    dots.forEach((dot, dotIndex) => {
+      dot.classList.toggle("is-active", dotIndex === activeIndex);
+      dot.setAttribute("aria-pressed", String(dotIndex === activeIndex));
+    });
+    slides.forEach((slide, slideIndex) => {
+      slide.inert = slideIndex !== activeIndex;
+      slide.setAttribute("aria-hidden", String(slideIndex !== activeIndex));
+    });
   }
-  navLinks.forEach(link => {
-    const active = link.hash === '#' + current;
-    link.classList.toggle('active', active);
-    if (active) link.setAttribute('aria-current', 'location');
-    else link.removeAttribute('aria-current');
+
+  function stopAutoplay() {
+    if (timer) clearInterval(timer);
+    timer = null;
+  }
+
+  function startAutoplay() {
+    stopAutoplay();
+    if (isPaused || document.hidden || heroCarousel.parentElement.matches(":hover, :focus-within"))
+      return;
+    timer = setInterval(() => showSlide(activeIndex + 1), 6000);
+  }
+
+  function updatePauseControl() {
+    heroCarouselPause.textContent = isPaused ? "Reproduzir" : "Pausar";
+    heroCarouselPause.setAttribute("aria-pressed", String(isPaused));
+  }
+
+  dots.forEach((dot, index) =>
+    dot.addEventListener("click", () => {
+      showSlide(index);
+      startAutoplay();
+    }),
+  );
+  [heroCarousel, carouselControls].forEach((element) => {
+    element.addEventListener("mouseenter", stopAutoplay);
+    element.addEventListener("mouseleave", startAutoplay);
+    element.addEventListener("focusin", stopAutoplay);
+    element.addEventListener("focusout", () => setTimeout(startAutoplay, 0));
   });
-  scheduled = false;
+  heroCarouselPause.addEventListener("click", () => {
+    isPaused = !isPaused;
+    updatePauseControl();
+    startAutoplay();
+  });
+  reducedMotion.addEventListener("change", () => {
+    isPaused = reducedMotion.matches;
+    updatePauseControl();
+    startAutoplay();
+  });
+  document.addEventListener("visibilitychange", startAutoplay);
+  showSlide(0);
+  updatePauseControl();
+  startAutoplay();
 }
-window.addEventListener('scroll', () => {
-  if (!scheduled) { scheduled = true; requestAnimationFrame(updateNavigation); }
-}, { passive: true });
-window.addEventListener('resize', updateNavigation);
-updateNavigation();
 
-document.querySelectorAll('.solution-card').forEach(card => {
-  const link = card.querySelector('a');
-  const product = card.querySelector('h3').textContent;
-  link.setAttribute('aria-label', 'Conversar sobre ' + product);
-});
+const navToggle = document.getElementById("navToggle");
+const navMenu = document.getElementById("navMenu");
+if (navToggle && navMenu) {
+  const mobileNavigation = matchMedia("(max-width: 1100px)");
+  navToggle.hidden = false;
+  navMenu.classList.add("is-collapsible");
+  function setNavigationOpen(isOpen) {
+    navMenu.classList.toggle("is-open", isOpen);
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+  }
+  navToggle.addEventListener("click", () => {
+    setNavigationOpen(navToggle.getAttribute("aria-expanded") !== "true");
+  });
+  navMenu.addEventListener("click", (event) => {
+    if (event.target.closest("a") && mobileNavigation.matches) setNavigationOpen(false);
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && navToggle.getAttribute("aria-expanded") === "true") {
+      setNavigationOpen(false);
+      navToggle.focus();
+    }
+  });
+  mobileNavigation.addEventListener("change", () => {
+    const focusWasInMenu = navMenu.contains(document.activeElement);
+    setNavigationOpen(false);
+    if (mobileNavigation.matches && focusWasInMenu) navToggle.focus();
+  });
+}
+
 const validPhone = /^[1-9]\d{9,14}$/.test(CONFIG.whatsapp);
-const whatsappUrl = message => 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(message);
-if (CONFIG.videoUrl) {
+const whatsappUrl = (message) =>
+  "https://wa.me/" + CONFIG.whatsapp + "?text=" + encodeURIComponent(message);
+const contactWhatsapp = document.getElementById("contactWhatsapp");
+if (contactWhatsapp && validPhone) {
+  contactWhatsapp.href = whatsappUrl("Olá! Quero conversar com um especialista sobre crédito.");
+  contactWhatsapp.hidden = false;
+  document.getElementById("contactPhone").hidden = true;
+  document.getElementById("contactNote").textContent = "O atendimento será aberto no WhatsApp.";
+}
+
+if (CONFIG.videoUrl && document.querySelector(".about-mark")) {
   try {
     const url = new URL(CONFIG.videoUrl);
-    if (url.protocol === 'https:' && ['www.youtube.com', 'www.youtube-nocookie.com'].includes(url.hostname) && /^\/embed\/[\w-]+$/.test(url.pathname)) {
-      const frame = document.createElement('iframe');
+    if (
+      url.protocol === "https:" &&
+      ["www.youtube.com", "www.youtube-nocookie.com"].includes(url.hostname) &&
+      /^\/embed\/[\w-]+$/.test(url.pathname)
+    ) {
+      const frame = document.createElement("iframe");
       frame.src = url.href;
-      frame.title = 'Vídeo institucional SOU + BLU';
-      frame.loading = 'lazy';
+      frame.title = "Vídeo institucional SOU + BLU";
+      frame.loading = "lazy";
       frame.allowFullscreen = true;
-      frame.className = 'configured-video';
-      document.querySelector('.about-mark').replaceWith(frame);
+      frame.className = "configured-video";
+      document.querySelector(".about-mark").replaceWith(frame);
     }
-  } catch { /* Mantém a apresentação da marca se a URL estiver incompleta. */ }
+  } catch {
+    /* Mantém a apresentação da marca se a URL estiver incompleta. */
+  }
 }
 
-const maskCpfCnpj = value => {
-  const digits = value.replace(/\D/g, '').slice(0, 14);
+const maskCpfCnpj = (value) => {
+  const digits = value.replace(/\D/g, "").slice(0, 14);
   if (digits.length <= 11) {
     return digits
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
   }
   return digits
-    .replace(/(\d{2})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1.$2')
-    .replace(/(\d{3})(\d)/, '$1/$2')
-    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+    .replace(/(\d{2})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1/$2")
+    .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
 };
 
-const maskPhone = value => {
-  const digits = value.replace(/\D/g, '').slice(0, 11);
+const maskPhone = (value) => {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
   if (digits.length <= 10) {
-    return digits
-      .replace(/(\d{2})(\d)/, '($1) $2')
-      .replace(/(\d{4})(\d{1,4})$/, '$1-$2');
+    return digits.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{4})(\d{1,4})$/, "$1-$2");
   }
-  return digits
-    .replace(/(\d{2})(\d)/, '($1) $2')
-    .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+  return digits.replace(/(\d{2})(\d)/, "($1) $2").replace(/(\d{5})(\d{1,4})$/, "$1-$2");
 };
 
-document.getElementById('partnerDocument')?.addEventListener('input', function () {
+document.getElementById("partnerDocument")?.addEventListener("input", function () {
   this.value = maskCpfCnpj(this.value);
 });
-document.getElementById('partnerCommercialPhone')?.addEventListener('input', function () {
+document.getElementById("partnerCommercialPhone")?.addEventListener("input", function () {
   this.value = maskPhone(this.value);
 });
-document.getElementById('partnerWhatsappPhone')?.addEventListener('input', function () {
+document.getElementById("partnerWhatsappPhone")?.addEventListener("input", function () {
   this.value = maskPhone(this.value);
 });
 
-// CONSULTA DE CNPJ (FonteData): pendente de backend.
-// A API da FonteData é paga e exige uma chave secreta (header X-API-Key) que
-// nunca pode ficar no código do site (front-end). Essa consulta deve rodar em
-// uma function/servidor que guarde a chave em segredo e nunca devolva o
-// resultado para o navegador de quem preenche o formulário — só para os
-// canais internos (ex: anexado à notificação enviada à equipe).
-// Falta: (1) hospedagem com suporte a backend/serverless e (2) chave de API.
-
-const partnerForm = document.getElementById('partnerForm');
-const partnerFormStatus = document.getElementById('partnerFormStatus');
+const partnerForm = document.getElementById("partnerForm");
+const partnerFormStatus = document.getElementById("partnerFormStatus");
+const markInvalid = (id, invalid) => {
+  const field = document.getElementById(id);
+  field?.closest(".form-field")?.classList.toggle("is-invalid", invalid);
+  field?.setAttribute("aria-invalid", String(invalid));
+};
+partnerForm?.addEventListener("input", (event) => {
+  if (event.target.id) markInvalid(event.target.id, false);
+});
+document.getElementById("partnerTerms")?.addEventListener("change", (event) => {
+  event.target.closest(".form-checkbox").classList.remove("is-invalid");
+});
 if (partnerForm && partnerFormStatus) {
-  partnerForm.addEventListener('submit', event => {
+  partnerForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(partnerForm).entries());
-    const name = (data.name || '').trim();
-    const document_ = (data.document || '').trim();
-    const commercialPhone = (data.commercialPhone || '').trim();
-    const commercialEmail = (data.commercialEmail || '').trim();
+    const name = (data.name || "").trim();
+    const partnerDocument = (data.document || "").trim();
+    const commercialPhone = (data.commercialPhone || "").trim();
+    const commercialEmail = (data.commercialEmail || "").trim();
     const termsAccepted = partnerForm.elements.terms.checked;
 
-    if (!name || !document_ || !commercialPhone || !commercialEmail) {
-      partnerFormStatus.textContent = 'Preencha nome, CNPJ/CPF, e-mail comercial e contato comercial para continuar.';
-      partnerFormStatus.className = 'is-error';
+    const missing = [
+      ["partnerName", !name],
+      ["partnerDocument", !partnerDocument],
+      ["partnerCommercialPhone", !commercialPhone],
+      ["partnerCommercialEmail", !commercialEmail],
+    ];
+    missing.forEach(([id, isMissing]) => markInvalid(id, isMissing));
+    partnerForm.querySelector(".form-checkbox").classList.toggle("is-invalid", !termsAccepted);
+
+    if (missing.some(([, isMissing]) => isMissing)) {
+      partnerFormStatus.textContent =
+        "Preencha nome, CNPJ/CPF, e-mail comercial e contato comercial para continuar.";
+      partnerFormStatus.className = "is-error";
+      const firstMissing = missing.find(([, isMissing]) => isMissing);
+      document.getElementById(firstMissing[0]).focus();
       return;
     }
     if (!termsAccepted) {
-      partnerFormStatus.textContent = 'É necessário aceitar os Termos e Condições de Uso para continuar.';
-      partnerFormStatus.className = 'is-error';
+      partnerFormStatus.textContent =
+        "É necessário aceitar os Termos e Condições de Uso para continuar.";
+      partnerFormStatus.className = "is-error";
+      document.getElementById("partnerTerms").focus();
       return;
     }
 
@@ -145,123 +221,130 @@ if (partnerForm && partnerFormStatus) {
       id: Date.now(),
       createdAt: new Date().toISOString(),
       name,
-      document: document_,
+      document: partnerDocument,
       commercialPhone,
-      whatsappPhone: (data.whatsappPhone || '').trim(),
+      whatsappPhone: (data.whatsappPhone || "").trim(),
       commercialEmail,
-      financialEmail: (data.financialEmail || '').trim(),
-      city: (data.city || '').trim(),
-      contactTime: data.contactTime || '',
-      worksCommercial: data.worksCommercial || '',
-      hasAddress: data.hasAddress || '',
-      creditExperience: data.creditExperience || '',
-      message: (data.message || '').trim(),
+      financialEmail: (data.financialEmail || "").trim(),
+      city: (data.city || "").trim(),
+      contactTime: data.contactTime || "",
+      worksCommercial: data.worksCommercial || "",
+      hasAddress: data.hasAddress || "",
+      creditExperience: data.creditExperience || "",
+      message: (data.message || "").trim(),
     };
-    const storageKey = 'blu-partner-registrations';
-    const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    saved.push(record);
-    localStorage.setItem(storageKey, JSON.stringify(saved));
+    const submitButton = partnerForm.querySelector('[type="submit"]');
+    const submitLabel = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = "Enviando...";
+    partnerFormStatus.textContent = "";
+    partnerFormStatus.className = "";
 
-    // Envia o cadastro para a API (guardado no servidor, visível na página
-    // de administração). Não bloqueia a confirmação para quem preencheu.
-    fetch('/api/parceiros.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(record),
-    }).catch(() => {});
+    // Só confirma depois que o servidor gravou o cadastro no banco.
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 15000);
+      const response = await fetch("/api/parceiros.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(record),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    } catch (error) {
+      console.error("Cadastro não enviado:", error);
+      partnerFormStatus.textContent =
+        "Não foi possível enviar o cadastro agora. Seus dados continuam no formulário, tente novamente em instantes.";
+      partnerFormStatus.className = "is-error";
+      submitButton.disabled = false;
+      submitButton.textContent = submitLabel;
+      return;
+    }
 
-    // Consulta interna de CNPJ (FonteData) - roda em segundo plano, no
-    // servidor. Não bloqueia o cadastro e nada disso volta para esta página.
-    if (document_.replace(/\D/g, '').length === 14) {
-      fetch('/api/consulta-cnpj.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: record.id, cnpj: document_, partnerName: name }),
+    // CNPJ: consulta feita no servidor, depois que o cadastro existe no banco.
+    // O resultado fica salvo no cadastro e não volta para esta página.
+    if (partnerDocument.replace(/\D/g, "").length === 14) {
+      fetch("/api/consulta-cnpj.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: record.id, cnpj: partnerDocument, partnerName: name }),
+        keepalive: true,
       }).catch(() => {});
     }
 
-    const summary = [
-      'Novo cadastro de parceiro:',
-      `Nome: ${record.name}`,
-      `CNPJ/CPF: ${record.document}`,
-      `Contato comercial: ${record.commercialPhone}`,
-      record.whatsappPhone && `Contato WhatsApp: ${record.whatsappPhone}`,
-      `E-mail comercial: ${record.commercialEmail}`,
-      record.financialEmail && `E-mail financeiro: ${record.financialEmail}`,
-      record.city && `Cidade/UF: ${record.city}`,
-      record.contactTime && `Melhor horário para contato: ${record.contactTime}`,
-      record.worksCommercial && `Trabalha na área comercial: ${record.worksCommercial}`,
-      record.hasAddress && `Possui endereço físico: ${record.hasAddress}`,
-      record.creditExperience && `Já trabalhou no mercado de crédito: ${record.creditExperience}`,
-      record.message && `Observações: ${record.message}`,
-    ].filter(Boolean).join('\n');
-
-    if (validPhone) {
-      window.open(whatsappUrl(summary), '_blank', 'noopener');
-      partnerFormStatus.textContent = 'Cadastro salvo! Você será direcionado ao WhatsApp para concluir o contato.';
-    } else {
-      partnerFormStatus.textContent = 'Cadastro salvo por aqui! Nosso WhatsApp estará disponível em breve — entraremos em contato pelos dados informados.';
-    }
-    partnerFormStatus.className = 'is-success';
+    partnerFormStatus.textContent =
+      "Cadastro salvo! Nossa equipe vai entrar em contato pelos dados informados.";
+    partnerFormStatus.className = "is-success";
     partnerForm.reset();
+    submitButton.disabled = false;
+    submitButton.textContent = submitLabel;
   });
 }
 
-// Revelação progressiva por seção ao rolar: cada bloco aparece inteiro,
-// sem escalonar item por item. O conteúdo continua visível sem JavaScript.
-const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+// Blocos aparecem ao rolar; sem JavaScript o conteúdo já fica visível.
+const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
 let revealObserver;
 function configureReveals() {
   revealObserver?.disconnect();
-  document.querySelectorAll('.reveal-pending').forEach(element => element.classList.remove('reveal-pending'));
-  if (motionPreference.matches || !('IntersectionObserver' in window)) return;
-  revealObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.remove('reveal-pending');
-      revealObserver.unobserve(entry.target);
+  document
+    .querySelectorAll(".reveal-pending")
+    .forEach((element) => element.classList.remove("reveal-pending"));
+  if (motionPreference.matches || !("IntersectionObserver" in window)) return;
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.remove("reveal-pending");
+        revealObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.08 },
+  );
+  document
+    .querySelectorAll(
+      ".section-heading, .about-mark, .about-copy, .solutions-grid, .steps-list, .accordion, .partners-form",
+    )
+    .forEach((element) => {
+      element.classList.add("reveal-item");
+      // Não ocultar conteúdo que já está na tela ou acima dela.
+      if (element.getBoundingClientRect().top < innerHeight) return;
+      element.classList.add("reveal-pending");
+      revealObserver.observe(element);
     });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.section-heading, .about-mark, .video-heading, .solutions-grid, .benefits, .steps-grid, .accordion, .partners-form').forEach(element => {
-    element.classList.add('reveal-item');
-    // Não ocultar conteúdo que já está na tela ou acima dela.
-    if (element.getBoundingClientRect().top < innerHeight) return;
-    element.classList.add('reveal-pending');
-    revealObserver.observe(element);
-  });
 }
 configureReveals();
-motionPreference.addEventListener('change', configureReveals);
+motionPreference.addEventListener("change", configureReveals);
 
-// A navegação por teclado nunca deixa o foco em um elemento oculto.
-document.addEventListener('focusin', event => {
-  const element = event.target.closest('.reveal-pending');
+// Foco por teclado nunca fica em elemento oculto.
+document.addEventListener("focusin", (event) => {
+  const element = event.target.closest(".reveal-pending");
   if (element) {
-    element.classList.remove('reveal-pending');
+    element.classList.remove("reveal-pending");
     revealObserver?.unobserve(element);
   }
 });
 
-const footerLegal = document.getElementById('footerLegal');
-const footerLegalToggle = document.getElementById('footerLegalToggle');
+const footerLegal = document.getElementById("footerLegal");
+const footerLegalToggle = document.getElementById("footerLegalToggle");
 if (footerLegal && footerLegalToggle) {
-  const mobileLegal = matchMedia('(max-width: 700px)');
+  const mobileLegal = matchMedia("(max-width: 700px)");
   const applyLegalState = () => {
     if (mobileLegal.matches) {
       footerLegalToggle.hidden = false;
-      footerLegal.classList.add('is-collapsed');
-      footerLegalToggle.textContent = 'Ler mais';
-      footerLegalToggle.setAttribute('aria-expanded', 'false');
+      footerLegal.classList.add("is-collapsed");
+      footerLegalToggle.textContent = "Ler mais";
+      footerLegalToggle.setAttribute("aria-expanded", "false");
     } else {
       footerLegalToggle.hidden = true;
-      footerLegal.classList.remove('is-collapsed');
+      footerLegal.classList.remove("is-collapsed");
     }
   };
   applyLegalState();
-  mobileLegal.addEventListener('change', applyLegalState);
-  footerLegalToggle.addEventListener('click', () => {
-    const collapsed = footerLegal.classList.toggle('is-collapsed');
-    footerLegalToggle.textContent = collapsed ? 'Ler mais' : 'Ler menos';
-    footerLegalToggle.setAttribute('aria-expanded', String(!collapsed));
+  mobileLegal.addEventListener("change", applyLegalState);
+  footerLegalToggle.addEventListener("click", () => {
+    const collapsed = footerLegal.classList.toggle("is-collapsed");
+    footerLegalToggle.textContent = collapsed ? "Ler mais" : "Ler menos";
+    footerLegalToggle.setAttribute("aria-expanded", String(!collapsed));
   });
 }

@@ -1,6 +1,3 @@
--- Rode isso uma vez no phpMyAdmin do cPanel da Locaweb, dentro do banco
--- que você criar em "Bancos de Dados MySQL".
-
 CREATE TABLE IF NOT EXISTS parceiros (
   id BIGINT UNSIGNED PRIMARY KEY,
   created_at VARCHAR(40) NOT NULL,
