@@ -1,0 +1,13 @@
+# Bloqueia o download direto de arquivos sensíveis via navegador.
+# Não altera rotas nem o comportamento das páginas e da API.
+# Os "require" do PHP (config.php, api/lib/*) leem pelo disco e não são afetados.
+
+<FilesMatch "^(\.env.*|\.git.*|\.prettierrc\.json|config\.php|.*\.(sql|ini|md|log|bak))$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
