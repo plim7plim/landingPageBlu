@@ -13,6 +13,10 @@ function env(string $key, $default = null) {
         $line = trim($line);
         if ($line === '' || $line[0] === '#' || strpos($line, '=') === false) continue;
         [$key2, $value] = array_map('trim', explode('=', $line, 2));
+        // Aceita valores entre aspas ("..." ou '...'), como no .env.example.
+        if (strlen($value) >= 2 && ($value[0] === '"' || $value[0] === "'") && substr($value, -1) === $value[0]) {
+          $value = substr($value, 1, -1);
+        }
         $vars[$key2] = $value;
       }
     }

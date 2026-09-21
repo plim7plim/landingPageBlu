@@ -57,7 +57,7 @@ function soubluTempPassword(): string {
 
 /**
  * Cria o usuário (role=parceiro) + o registro em partners na Sou+Blu,
- * a partir de um cadastro aprovado da tabela local parceiros.
+ * a partir de um cadastro aprovado da tabela local lp_parceiros.
  * Retorna ['user_id' => ..., 'temp_password' => ..., 'email_sent' => bool].
  * Lança RuntimeException se algo impedir a criação (ex.: e-mail já usado).
  */

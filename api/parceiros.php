@@ -50,7 +50,7 @@ if ($method === 'POST') {
     jsonResponse(['ok' => false, 'error' => 'Dados obrigatórios ausentes.'], 400);
   }
   try {
-    $stmt = db()->prepare('INSERT INTO parceiros
+    $stmt = db()->prepare('INSERT INTO lp_parceiros
       (id, created_at, name, document, commercial_phone, whatsapp_phone, commercial_email, financial_email, city, contact_time, works_commercial, has_address, credit_experience, message, status)
       VALUES (:id, :created_at, :name, :document, :commercial_phone, :whatsapp_phone, :commercial_email, :financial_email, :city, :contact_time, :works_commercial, :has_address, :credit_experience, :message, "pendente")');
     $stmt->execute([
@@ -79,7 +79,7 @@ if ($method === 'POST') {
 if ($method === 'GET') {
   requireAdmin();
   try {
-    $rows = db()->query('SELECT * FROM parceiros ORDER BY id DESC')->fetchAll();
+    $rows = db()->query('SELECT * FROM lp_parceiros ORDER BY id DESC')->fetchAll();
     jsonResponse([
       'ok' => true,
       'records' => array_map('recordFromRow', $rows),
@@ -102,7 +102,7 @@ if ($method === 'PATCH') {
       jsonResponse(['ok' => false, 'error' => 'id é obrigatório.'], 400);
     }
     try {
-      $stmt = db()->prepare('SELECT * FROM parceiros WHERE id = :id');
+      $stmt = db()->prepare('SELECT * FROM lp_parceiros WHERE id = :id');
       $stmt->execute(['id' => $id]);
       $record = $stmt->fetch();
       if (!$record) {
@@ -124,7 +124,7 @@ if ($method === 'PATCH') {
     jsonResponse(['ok' => false, 'error' => 'id e status (pendente/aprovado/recusado) são obrigatórios.'], 400);
   }
   try {
-    $stmt = db()->prepare('UPDATE parceiros SET status = :status, status_updated_at = :updated WHERE id = :id');
+    $stmt = db()->prepare('UPDATE lp_parceiros SET status = :status, status_updated_at = :updated WHERE id = :id');
     $stmt->execute(['status' => $status, 'updated' => date('c'), 'id' => $id]);
     if ($stmt->rowCount() === 0) {
       jsonResponse(['ok' => false, 'error' => 'Cadastro não encontrado.'], 404);
@@ -148,7 +148,7 @@ if ($method === 'PATCH') {
  * para não impedir a aprovação em si.
  */
 function syncParceiroToSoublu(string $id): array {
-  $stmt = db()->prepare('SELECT * FROM parceiros WHERE id = :id');
+  $stmt = db()->prepare('SELECT * FROM lp_parceiros WHERE id = :id');
   $stmt->execute(['id' => $id]);
   $record = $stmt->fetch();
   if (!$record) {
@@ -160,7 +160,7 @@ function syncParceiroToSoublu(string $id): array {
 
   try {
     $result = soubluCreateParceiro($record);
-    $upd = db()->prepare('UPDATE parceiros SET soublu_user_id = :uid, soublu_temp_password = :pwd, soublu_synced_at = :synced, soublu_error = NULL WHERE id = :id');
+    $upd = db()->prepare('UPDATE lp_parceiros SET soublu_user_id = :uid, soublu_temp_password = :pwd, soublu_synced_at = :synced, soublu_error = NULL WHERE id = :id');
     $upd->execute([
       'uid' => $result['user_id'],
       'pwd' => $result['temp_password'],
@@ -175,7 +175,7 @@ function syncParceiroToSoublu(string $id): array {
     ];
   } catch (Throwable $e) {
     error_log('Erro ao criar parceiro na Sou+Blu: ' . $e->getMessage());
-    $upd = db()->prepare('UPDATE parceiros SET soublu_error = :err WHERE id = :id');
+    $upd = db()->prepare('UPDATE lp_parceiros SET soublu_error = :err WHERE id = :id');
     $upd->execute(['err' => $e->getMessage(), 'id' => $id]);
     return ['ok' => false, 'error' => $e->getMessage()];
   }

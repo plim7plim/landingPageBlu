@@ -44,7 +44,7 @@ $consultadoEm = date('c');
 
 if ($id) {
   try {
-    $stmt = db()->prepare('UPDATE parceiros SET fontedata_result = :result, fontedata_consultado_em = :consultado_em WHERE id = :id');
+    $stmt = db()->prepare('UPDATE lp_parceiros SET fontedata_result = :result, fontedata_consultado_em = :consultado_em WHERE id = :id');
     $stmt->execute([
       'result' => json_encode($companyData),
       'consultado_em' => $consultadoEm,
