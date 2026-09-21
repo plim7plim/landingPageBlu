@@ -28,7 +28,11 @@ function sendApprovalEmail(array $record, string $email, string $tempPassword): 
       ? mb_encode_mimeheader($subject, 'UTF-8', 'B', "\r\n")
       : '=?UTF-8?B?' . base64_encode($subject) . '?=';
 
-    return @mail($email, $encodedSubject, $body, $headers);
+    $sent = @mail($email, $encodedSubject, $body, $headers);
+    if (!$sent) {
+      error_log('mail() recusou o e-mail de aprovação para ' . $email . ' (sem SMTP configurado?).');
+    }
+    return $sent;
   } catch (Throwable $e) {
     error_log('Erro ao enviar e-mail de aprovação para ' . $email . ': ' . $e->getMessage());
     return false;

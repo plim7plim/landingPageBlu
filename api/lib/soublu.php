@@ -58,7 +58,7 @@ function soubluTempPassword(): string {
 /**
  * Cria o usuário (role=parceiro) + o registro em partners na Sou+Blu,
  * a partir de um cadastro aprovado da tabela local parceiros.
- * Retorna ['user_id' => ..., 'temp_password' => ...].
+ * Retorna ['user_id' => ..., 'temp_password' => ..., 'email_sent' => bool].
  * Lança RuntimeException se algo impedir a criação (ex.: e-mail já usado).
  */
 function soubluCreateParceiro(array $record): array {
@@ -127,7 +127,7 @@ function soubluCreateParceiro(array $record): array {
   ];
   soubluRest('POST', 'partners', $partnerPayload);
 
-  sendApprovalEmail($record, $email, $tempPassword);
+  $emailSent = sendApprovalEmail($record, $email, $tempPassword);
 
-  return ['user_id' => $userId, 'temp_password' => $tempPassword];
+  return ['user_id' => $userId, 'temp_password' => $tempPassword, 'email_sent' => $emailSent];
 }

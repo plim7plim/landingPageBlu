@@ -259,6 +259,15 @@
         font-size: 13px;
         margin: 0;
       }
+      .detail-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 14px 0 10px;
+      }
+      .detail-actions a.btn {
+        text-decoration: none;
+      }
       .partner-card {
         cursor: pointer;
       }
@@ -367,6 +376,8 @@
       const STORAGE_KEY = "blu-admin-token";
       let currentToken = null;
       let records = [];
+      let openRecord = null;
+      let loginUrl = "https://soumaisblu.com.br/index.html";
 
       function escapeHtml(value) {
         const div = document.createElement("div");
@@ -518,6 +529,7 @@
       }
 
       function openDetail(record) {
+        openRecord = record;
         detailName.textContent = record.name;
         detailBody.innerHTML = `
         <div class="detail-section">
@@ -557,6 +569,7 @@
         if (!record.soubluUserId) {
           return '<p class="detail-muted">Nenhum acesso criado ainda (aprove o cadastro para gerar automaticamente).</p>';
         }
+        const whatsappUrl = soubluWhatsappUrl(record);
         return `
         <div class="detail-grid">
           ${detailField("ID do usuário", record.soubluUserId)}
@@ -564,9 +577,65 @@
           ${detailField("Senha temporária", record.soubluTempPassword)}
           ${detailField("Criado em", formatDate(record.soubluSyncedAt))}
         </div>
-        <p class="detail-muted">Esse login e senha já foram enviados por e-mail para o parceiro automaticamente. A senha só aparece aqui até ser trocada por ele.</p>
+        <div class="detail-actions">
+          <button type="button" class="btn btn-outline btn-small" data-action="resend-email">Reenviar e-mail</button>
+          ${
+            whatsappUrl
+              ? `<a class="btn btn-outline btn-small" href="${whatsappUrl}" target="_blank" rel="noopener noreferrer">Enviar pelo WhatsApp</a>`
+              : '<span class="detail-muted">Sem telefone válido para WhatsApp.</span>'
+          }
+        </div>
+        <p class="detail-muted" id="soubluActionStatus">O e-mail é enviado automaticamente na aprovação, mas pode falhar ou cair em spam. Use os botões acima para reenviar.</p>
       `;
       }
+
+      // Telefone do cadastro (WhatsApp, senão comercial) -> só dígitos com DDI 55.
+      function partnerWhatsappNumber(record) {
+        const digits = String(record.whatsappPhone || record.commercialPhone || "").replace(/\D/g, "");
+        if (digits.length === 10 || digits.length === 11) return "55" + digits;
+        if ((digits.length === 12 || digits.length === 13) && digits.startsWith("55")) return digits;
+        return null;
+      }
+
+      function soubluWhatsappUrl(record) {
+        const number = partnerWhatsappNumber(record);
+        if (!number || !record.soubluTempPassword) return null;
+        const text =
+          `Olá, ${record.name}! Seu acesso à Sou+Blu foi criado.\n\n` +
+          `Login: ${record.commercialEmail}\n` +
+          `Senha temporária: ${record.soubluTempPassword}\n\n` +
+          `Acesse em: ${loginUrl}\n\n` +
+          "Por segurança, troque a senha no primeiro acesso.";
+        return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+      }
+
+      detailBody.addEventListener("click", async (event) => {
+        const button = event.target.closest('[data-action="resend-email"]');
+        if (!button || !openRecord) return;
+        const status = document.getElementById("soubluActionStatus");
+        button.disabled = true;
+        status.textContent = "Enviando e-mail...";
+        try {
+          const response = await fetch("/api/parceiros.php", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "X-Admin-Token": currentToken },
+            body: JSON.stringify({ id: openRecord.id, action: "resend-email" }),
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || !data.ok) {
+            status.textContent = data.error || "Não foi possível reenviar o e-mail.";
+          } else if (data.emailSent) {
+            status.textContent = `E-mail enviado para ${openRecord.commercialEmail}. Se o parceiro não achar, peça para olhar o spam.`;
+          } else {
+            status.textContent =
+              "O servidor não conseguiu enviar o e-mail. Use o botão de WhatsApp para passar o acesso.";
+          }
+        } catch {
+          status.textContent = "Erro de conexão ao reenviar o e-mail.";
+        } finally {
+          button.disabled = false;
+        }
+      });
 
       function closeDetail() {
         detailOverlay.hidden = true;
@@ -610,7 +679,10 @@
               if (data.soublu.ok && data.soublu.tempPassword) {
                 record.soubluUserId = data.soublu.userId;
                 record.soubluTempPassword = data.soublu.tempPassword;
-                listStatus.textContent = `Acesso Sou+Blu criado! Login: ${record.commercialEmail} · Senha temporária: ${data.soublu.tempPassword} (já enviado por e-mail ao parceiro).`;
+                const emailNote = data.soublu.emailSent
+                  ? "E-mail enviado ao parceiro."
+                  : "O e-mail NÃO foi enviado: abra o cartão e use Reenviar e-mail ou WhatsApp.";
+                listStatus.textContent = `Acesso Sou+Blu criado! Login: ${record.commercialEmail} · Senha temporária: ${data.soublu.tempPassword}. ${emailNote}`;
               } else if (!data.soublu.ok) {
                 listStatus.textContent = `Aprovado, mas não foi possível criar o acesso na Sou+Blu: ${data.soublu.error || "erro desconhecido"}. Veja detalhes no cartão.`;
               }
@@ -642,6 +714,7 @@
             return;
           }
           records = data.records || [];
+          if (data.loginUrl) loginUrl = data.loginUrl;
           listStatus.textContent = `${records.length} cadastro(s). Arraste os cartões entre as colunas para mudar o status.`;
           render();
         } catch (error) {

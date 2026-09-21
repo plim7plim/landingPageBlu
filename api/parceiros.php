@@ -80,7 +80,11 @@ if ($method === 'GET') {
   requireAdmin();
   try {
     $rows = db()->query('SELECT * FROM parceiros ORDER BY id DESC')->fetchAll();
-    jsonResponse(['ok' => true, 'records' => array_map('recordFromRow', $rows)]);
+    jsonResponse([
+      'ok' => true,
+      'records' => array_map('recordFromRow', $rows),
+      'loginUrl' => env('SOUBLU_LOGIN_URL', 'https://soumaisblu.com.br/index.html'),
+    ]);
   } catch (Exception $e) {
     error_log('Erro ao listar cadastros de parceiro: ' . $e->getMessage());
     jsonResponse(['ok' => false], 500);
@@ -92,6 +96,30 @@ if ($method === 'PATCH') {
   $data = jsonInput();
   $id = $data['id'] ?? null;
   $status = $data['status'] ?? null;
+
+  if (($data['action'] ?? null) === 'resend-email') {
+    if (!$id) {
+      jsonResponse(['ok' => false, 'error' => 'id é obrigatório.'], 400);
+    }
+    try {
+      $stmt = db()->prepare('SELECT * FROM parceiros WHERE id = :id');
+      $stmt->execute(['id' => $id]);
+      $record = $stmt->fetch();
+      if (!$record) {
+        jsonResponse(['ok' => false, 'error' => 'Cadastro não encontrado.'], 404);
+      }
+      if (empty($record['soublu_user_id']) || empty($record['soublu_temp_password'])) {
+        jsonResponse(['ok' => false, 'error' => 'Este cadastro ainda não tem acesso criado na Sou+Blu.'], 409);
+      }
+      $email = strtolower(trim($record['commercial_email']));
+      $sent = sendApprovalEmail($record, $email, $record['soublu_temp_password']);
+      jsonResponse(['ok' => true, 'emailSent' => $sent]);
+    } catch (Exception $e) {
+      error_log('Erro ao reenviar e-mail de aprovação: ' . $e->getMessage());
+      jsonResponse(['ok' => false], 500);
+    }
+  }
+
   if (!$id || !in_array($status, STATUSES, true)) {
     jsonResponse(['ok' => false, 'error' => 'id e status (pendente/aprovado/recusado) são obrigatórios.'], 400);
   }
@@ -139,7 +167,12 @@ function syncParceiroToSoublu(string $id): array {
       'synced' => date('c'),
       'id' => $id,
     ]);
-    return ['ok' => true, 'userId' => $result['user_id'], 'tempPassword' => $result['temp_password']];
+    return [
+      'ok' => true,
+      'userId' => $result['user_id'],
+      'tempPassword' => $result['temp_password'],
+      'emailSent' => $result['email_sent'],
+    ];
   } catch (Throwable $e) {
     error_log('Erro ao criar parceiro na Sou+Blu: ' . $e->getMessage());
     $upd = db()->prepare('UPDATE parceiros SET soublu_error = :err WHERE id = :id');

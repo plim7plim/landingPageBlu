@@ -1,6 +1,6 @@
 // Edite somente estes campos quando os canais oficiais estiverem disponíveis.
 const CONFIG = {
-  whatsapp: "", // Código do país + DDD + número, só dígitos. Vazio = botão de WhatsApp oculto.
+  whatsapp: "5511962736167", // Código do país + DDD + número, só dígitos. Vazio = botão de WhatsApp oculto.
   videoUrl: "", // URL de incorporação: https://www.youtube.com/embed/ID
 };
 
