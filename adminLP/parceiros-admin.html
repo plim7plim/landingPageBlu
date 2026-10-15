@@ -61,9 +61,25 @@
         font-size: 12px;
       }
 
+      #detailMoveStatus {
+        min-height: 42px;
+        max-width: 100%;
+        padding: 9px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--text);
+        font: inherit;
+      }
+      [data-manage="exclude"],
+      .card-actions [data-action="delete"] {
+        color: #a12424;
+        border-color: #e3baba;
+      }
+
       .board {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 18px;
         align-items: start;
       }
@@ -155,12 +171,23 @@
         font-size: 11px;
         line-height: 1.6;
       }
+      .partner-card .card-experience {
+        margin-top: 8px;
+        color: var(--text);
+        font-weight: 600;
+      }
       .partner-card .card-doc {
         color: var(--blue);
         font-weight: 700;
       }
 
-      @media (max-width: 900px) {
+      @media (min-width: 601px) and (max-width: 1100px) {
+        .board {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 600px) {
         .board {
           grid-template-columns: 1fr;
         }
@@ -278,9 +305,36 @@
       }
       .admin-filters {
         display: grid;
-        grid-template-columns: 2fr repeat(4, 1fr);
+        grid-template-columns: 1fr;
         gap: 12px;
         margin: 24px 0 16px;
+      }
+      .archive-navigation { margin: 24px 0; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+      .archive-navigation span { margin-left: 5px; }
+      .archive-area { padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
+      .archive-area h2 { font-size: 20px; margin-bottom: 8px; }
+      .archive-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; margin-top: 20px; }
+      .archive-cards .partner-card { cursor: pointer; }
+      .quick-filter { display: grid; gap: 8px; font-size: 12px; }
+      .filter-choices { display: flex; flex-wrap: wrap; gap: 8px; }
+      .filter-choices button {
+        min-height: 44px; padding: 10px 15px; border: 1px solid var(--line);
+        border-radius: 8px; background: white; color: var(--text); font: inherit;
+        cursor: pointer;
+      }
+      .filter-choices button[aria-pressed="true"] {
+        background: var(--navy); color: white; border-color: var(--navy); font-weight: 600;
+      }
+      .filter-choices button:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+      .filter-search, .quick-filter, .more-filters { grid-column: 1 / -1; }
+      .more-filters { border-top: 1px solid var(--line); padding-top: 12px; }
+      .more-filters summary { cursor: pointer; font-size: 13px; padding: 8px 0; }
+      .more-filters-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding-top: 12px; }
+      #moreFiltersCount { color: var(--muted); font-size: 12px; }
+      @media (max-width: 600px) {
+        .more-filters-grid { grid-template-columns: 1fr; }
+        .filter-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .filter-choices button { padding-inline: 8px; }
       }
       .admin-filters label {
         display: grid;
@@ -447,30 +501,39 @@
             </button>
           </div>
         </div>
+        <nav class="archive-navigation filter-choices" aria-label="Áreas dos cadastros">
+          <input type="hidden" id="filterArchive" value="active" />
+          <button type="button" data-filter="filterArchive" data-value="active" aria-pressed="true">Em acompanhamento <span id="activeTotal"></span></button>
+          <button type="button" data-filter="filterArchive" data-value="archived" aria-pressed="false">Arquivados <span id="archiveTotal"></span></button>
+        </nav>
         <div class="admin-filters" aria-label="Filtros de cadastros">
-          <label
-            >Buscar cadastro<input
-              id="filterSearch"
-              type="search"
-              placeholder="Nome, CPF/CNPJ, e-mail ou cidade"
-          /></label>
-          <label
-            >Situação<select id="filterStatus">
-              <option value="">Todas</option>
-              <option value="pendente">Pendente</option>
-              <option value="aprovado">Aprovado</option>
-              <option value="recusado">Recusado</option>
-            </select></label
-          >
-          <label
-            >Visualização<select id="filterArchive">
-              <option value="active">Em acompanhamento</option>
-              <option value="archived">Arquivados</option>
-              <option value="all">Todos</option>
-            </select></label
-          >
-          <label>Cadastrado de<input type="date" id="filterFrom" /></label>
-          <label>Até<input type="date" id="filterTo" /></label>
+          <label class="filter-search">Buscar cadastro
+            <input id="filterSearch" type="search" placeholder="Nome, CPF/CNPJ, e-mail ou cidade" />
+          </label>
+          <div class="quick-filter">
+            <span id="experienceFilterLabel">Experiência com crédito</span>
+            <input type="hidden" id="filterExperience" value="" />
+            <div class="filter-choices" role="group" aria-labelledby="experienceFilterLabel">
+              <button type="button" data-filter="filterExperience" data-value="" aria-pressed="true">Todos</button>
+              <button type="button" data-filter="filterExperience" data-value="yes" aria-pressed="false">Com experiência</button>
+              <button type="button" data-filter="filterExperience" data-value="no" aria-pressed="false">Sem experiência</button>
+              <button type="button" data-filter="filterExperience" data-value="unknown" aria-pressed="false">Não informado</button>
+            </div>
+          </div>
+          <details class="more-filters">
+            <summary>Situação e período <span id="moreFiltersCount"></span></summary>
+            <div class="more-filters-grid">
+              <label>Situação<select id="filterStatus">
+                <option value="">Todas as divisões</option>
+                <option value="pendente">Pendente</option>
+                <option value="em_negociacao">Em negociação</option>
+                <option value="aprovado">Aprovado</option>
+                <option value="recusado">Excluído</option>
+              </select></label>
+              <label>Cadastrado de<input type="date" id="filterFrom" /></label>
+              <label>Até<input type="date" id="filterTo" /></label>
+            </div>
+          </details>
         </div>
         <div class="filter-actions">
           <button type="button" class="btn btn-outline btn-small" id="clearFilters">
@@ -489,6 +552,15 @@
             <div class="board-cards" data-column="pendente"></div>
           </section>
 
+          <section class="board-col" data-status="em_negociacao">
+            <div class="board-col-head">
+              <h2>Em negociação</h2>
+              <span class="board-count" data-count="em_negociacao">0</span>
+            </div>
+            <p class="board-hint">Em contato com a pessoa para conversar sobre a parceria.</p>
+            <div class="board-cards" data-column="em_negociacao"></div>
+          </section>
+
           <section class="board-col" data-status="aprovado">
             <div class="board-col-head">
               <h2>Aprovados</h2>
@@ -497,18 +569,26 @@
             <p class="board-hint">
               Aprovar exige confirmação antes de criar o acesso e enviar o e-mail. Retirar de
               Aprovados muda a situação do cadastro; não desativa um acesso já criado.
+              Após 3 dias (72 horas) nesta divisão, o cadastro será arquivado automaticamente.
+              Encontre-o na área Arquivados. Restaurar reinicia o prazo.
             </p>
             <div class="board-cards" data-column="aprovado"></div>
           </section>
 
           <section class="board-col" data-status="recusado">
             <div class="board-col-head">
-              <h2>Recusados</h2>
+              <h2>Excluídos</h2>
               <span class="board-count" data-count="recusado">0</span>
             </div>
+            <p class="board-hint">Os cadastros ficam nesta divisão por 3 dias (72 horas) e depois são arquivados automaticamente. O botão Excluir apaga definitivamente o registro, após confirmação. Essa ação não exclui o acesso na Sou+Blu.</p>
             <div class="board-cards" data-column="recusado"></div>
           </section>
         </div>
+        <section id="archiveArea" class="archive-area" aria-labelledby="archiveTitle" hidden>
+          <h2 id="archiveTitle">Arquivados</h2>
+          <p class="admin-status">Cadastros retirados do acompanhamento. Restaure para voltar à divisão anterior.</p>
+          <div id="archiveCards" class="archive-cards"></div>
+        </section>
       </div>
 
       <div id="detailOverlay" class="detail-overlay" hidden>
@@ -577,6 +657,7 @@
       const filterSearch = document.getElementById("filterSearch");
       const filterStatus = document.getElementById("filterStatus");
       const filterArchive = document.getElementById("filterArchive");
+      const filterExperience = document.getElementById("filterExperience");
       const filterFrom = document.getElementById("filterFrom");
       const filterTo = document.getElementById("filterTo");
       let loginUrl = "https://soumaisblu.com.br/index.html";
@@ -600,24 +681,34 @@
           <small class="card-doc">${escapeHtml(record.document)}</small>
           <small>${escapeHtml(record.commercialPhone)} · ${escapeHtml(record.commercialEmail)}</small>
           ${bits ? `<small>${bits}</small>` : ""}
-          ${record.archivedAt ? `<span class="card-archived">Arquivado em ${escapeHtml(formatDate(record.archivedAt))}</span>` : ""}
-          <div class="card-actions">
-            ${
-              record.archivedAt
-                ? '<button type="button" data-action="restore">Restaurar</button>'
-                : `
-              ${record.status !== "aprovado" || !record.soubluUserId ? '<button type="button" data-action="status" data-status="aprovado">Aprovar</button>' : ""}
-              ${record.status !== "pendente" ? '<button type="button" data-action="status" data-status="pendente">Mover para pendente</button>' : ""}
-              ${record.status !== "recusado" ? '<button type="button" data-action="status" data-status="recusado">Recusar</button>' : ""}
-              <button type="button" data-action="archive">Arquivar</button>`
-            }
-          </div>
+          <small class="card-experience">${escapeHtml(experienceLabel(record.creditExperience))}</small>
+          ${!record.archivedAt && record.archiveDueAt ? `<small>Arquivamento automático: ${escapeHtml(formatDate(record.archiveDueAt))}</small>` : ""}
+          ${record.archivedAt ? `<small>Divisão anterior: ${escapeHtml(statusLabel(record.status))}</small><span class="card-archived">Arquivado em ${escapeHtml(formatDate(record.archivedAt))}</span><div class="card-actions"><button type="button" data-action="restore">Restaurar</button></div>` : ""}
+          ${record.status === "recusado" ? '<div class="card-actions"><button type="button" data-action="delete">Excluir</button></div>' : ""}
+
         </div>
       `;
       }
 
+      document.querySelectorAll("[data-filter]").forEach(button => {
+        button.addEventListener("click", () => {
+          document.getElementById(button.dataset.filter).value = button.dataset.value;
+          render();
+        });
+      });
+
       function render() {
-        const grouped = { pendente: [], aprovado: [], recusado: [] };
+        const archiveView = filterArchive.value === "archived";
+        document.querySelector(".board").hidden = archiveView;
+        document.getElementById("archiveArea").hidden = !archiveView;
+        document.getElementById("activeTotal").textContent = `(${records.filter(record => !record.archivedAt).length})`;
+        document.getElementById("archiveTotal").textContent = `(${records.filter(record => record.archivedAt).length})`;
+        document.querySelectorAll("[data-filter]").forEach(button => {
+          button.setAttribute("aria-pressed", String(document.getElementById(button.dataset.filter).value === button.dataset.value));
+        });
+        const extraCount = [filterStatus.value, filterFrom.value, filterTo.value].filter(Boolean).length;
+        document.getElementById("moreFiltersCount").textContent = extraCount ? `(${extraCount} ativo${extraCount > 1 ? "s" : ""})` : "";
+        const grouped = { pendente: [], em_negociacao: [], aprovado: [], recusado: [] };
         const search = normalizeSearch(filterSearch.value);
         const digits = filterSearch.value.replace(/\D/g, "");
         const invalidPeriod =
@@ -627,6 +718,7 @@
           if (filterArchive.value === "active" && record.archivedAt) return false;
           if (filterArchive.value === "archived" && !record.archivedAt) return false;
           if (filterStatus.value && record.status !== filterStatus.value) return false;
+          if (filterExperience.value && experienceGroup(record.creditExperience) !== filterExperience.value) return false;
           const date = (record.createdAt || "").slice(0, 10);
           if (filterFrom.value && date < filterFrom.value) return false;
           if (filterTo.value && date > filterTo.value) return false;
@@ -658,7 +750,7 @@
           : "";
         visibleRecords.forEach((record) => {
           const status = grouped[record.status] ? record.status : "pendente";
-          grouped[status].push(record);
+          if (!record.archivedAt) grouped[status].push(record);
         });
 
         columns.forEach((column) => {
@@ -673,7 +765,26 @@
           el.textContent = grouped[el.dataset.count].length;
         });
 
+        const archived = archiveView ? [...visibleRecords].sort((a, b) => Date.parse(b.archivedAt) - Date.parse(a.archivedAt)) : [];
+        document.getElementById("archiveCards").innerHTML = archived.length
+          ? archived.map(cardHtml).join("")
+          : '<p class="board-empty">Nenhum arquivado encontrado com estes filtros.</p>';
         attachDragHandlers();
+      }
+
+      function experienceGroup(value) {
+        const answer = normalizeSearch(value);
+        if (answer === "sim") return "yes";
+        if (answer === "nao") return "no";
+        return "unknown";
+      }
+
+      function experienceLabel(value) {
+        return {
+          yes: "Com experiência em crédito",
+          no: "Sem experiência em crédito",
+          unknown: "Experiência não informada",
+        }[experienceGroup(value)];
       }
 
       function normalizeSearch(value) {
@@ -683,12 +794,11 @@
           .toLowerCase()
           .trim();
       }
-      [filterSearch, filterStatus, filterArchive, filterFrom, filterTo].forEach((input) =>
+      [filterSearch, filterStatus, filterArchive, filterExperience, filterFrom, filterTo].forEach((input) =>
         input.addEventListener("input", render),
       );
       document.getElementById("clearFilters").addEventListener("click", () => {
-        filterSearch.value = filterStatus.value = filterFrom.value = filterTo.value = "";
-        filterArchive.value = "active";
+        filterSearch.value = filterStatus.value = filterExperience.value = filterFrom.value = filterTo.value = "";
         render();
       });
 
@@ -723,7 +833,7 @@
 
       function statusLabel(status) {
         return (
-          { pendente: "Pendente", aprovado: "Aprovado", recusado: "Recusado" }[status] || status
+          { pendente: "Pendente", em_negociacao: "Em negociação", aprovado: "Aprovado", recusado: "Excluído" }[status] || status
         );
       }
 
@@ -811,6 +921,22 @@
         detailName.textContent = record.name;
         detailBody.innerHTML = `
         <div class="detail-section">
+          <h3>Gerenciar cadastro</h3>
+          <div class="detail-actions">
+            ${record.archivedAt
+              ? '<button type="button" class="btn btn-outline btn-small" data-manage="restore">Restaurar cadastro</button>'
+              : `<label class="detail-field">Mover para
+                  <select id="detailMoveStatus" aria-label="Mover cadastro para">
+                    <option value="">Selecione a divisão</option>
+                    ${["pendente", "em_negociacao", "aprovado"].filter(status => status !== record.status || (status === "aprovado" && !record.soubluUserId)).map(status => `<option value="${status}">${escapeHtml(statusLabel(status))}</option>`).join("")}
+                  </select>
+                </label>
+                <button type="button" class="btn btn-outline btn-small" data-manage="archive">Arquivar</button>
+                ${record.status !== "recusado" ? '<button type="button" class="btn btn-outline btn-small" data-manage="exclude">Excluir</button>' : ""}`}
+          </div>
+          <p class="detail-muted">Excluir move para Excluídos e permite recuperar o cadastro. Os dados são preservados.</p>
+        </div>
+        <div class="detail-section">
           <h3>Cadastro</h3>
           <div class="detail-grid">
             ${detailField("Documento", record.document)}
@@ -891,6 +1017,21 @@
         return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
       }
 
+      detailBody.addEventListener("change", (event) => {
+        if (event.target.id !== "detailMoveStatus" || !event.target.value || !openRecord) return;
+        const record = openRecord;
+        const status = event.target.value;
+        event.target.value = "";
+        prepareAction(record, "status", status);
+      });
+      detailBody.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-manage]");
+        if (!button || !openRecord) return;
+        const action = button.dataset.manage;
+        prepareAction(openRecord, action === "exclude" ? "status" : action,
+          action === "exclude" ? "recusado" : undefined);
+      });
+
       detailBody.addEventListener("click", async (event) => {
         const button = event.target.closest('[data-action="resend-email"]');
         if (!button || !openRecord) return;
@@ -921,6 +1062,7 @@
 
       function closeDetail() {
         detailOverlay.hidden = true;
+        openRecord = null;
       }
 
       detailCloseBtn.addEventListener("click", closeDetail);
@@ -988,31 +1130,37 @@
         document.getElementById("actionDestination").textContent = "";
         document.getElementById("actionTitle").textContent = needsCode
           ? "Confirmar criação de usuário"
+          : action === "delete" ? "Excluir definitivamente?"
           : action === "archive"
             ? "Arquivar cadastro?"
             : action === "restore"
               ? "Restaurar cadastro?"
-              : "Alterar situação?";
+              : status === "recusado" ? "Excluir cadastro?" : "Alterar situação?";
         let description;
-        if (needsCode)
+        if (action === "delete")
+          description = `Excluir definitivamente o registro de ${record.name} (${record.document})? Os dados do candidato serão apagados do painel e não poderão ser recuperados. O acesso na Sou+Blu, se existir, será mantido.`;
+        else if (needsCode)
           description = `Você realmente deseja criar um usuário para ${record.name} (${record.commercialEmail})?`;
         else if (action === "archive")
           description = `Arquivar ${record.name}? O cadastro sairá do acompanhamento, mas os dados e a situação serão preservados. Você poderá restaurá-lo nos filtros.`;
         else if (action === "restore")
-          description = `Restaurar ${record.name} para ${statusLabel(record.status)}? Esta ação não cria nem reativa um acesso.`;
+          description = `Restaurar ${record.name} para ${statusLabel(record.status)}? Esta ação não cria nem reativa um acesso. Em Aprovados e Excluídos, o prazo de 3 dias recomeça agora.`;
+        else if (status === "recusado")
+          description = `Excluir ${record.name}? O cadastro será movido para Excluídos, onde poderá ser recuperado. Após 3 dias, será arquivado automaticamente.`;
         else
           description = `Mover ${record.name} de ${statusLabel(record.status)} para ${statusLabel(status)}?`;
-        if (record.soubluUserId && action !== "restore")
+        if (record.soubluUserId && action !== "restore" && action !== "delete")
           description +=
             " O acesso já criado na Sou+Blu será mantido; esta ação não bloqueia nem exclui o usuário.";
         document.getElementById("actionDescription").textContent = description;
         actionConfirm.textContent = needsCode
           ? "Confirmar e criar acesso"
+          : action === "delete" ? "Excluir definitivamente"
           : action === "archive"
             ? "Arquivar"
             : action === "restore"
               ? "Restaurar"
-              : "Confirmar alteração";
+              : status === "recusado" ? "Excluir cadastro" : "Confirmar alteração";
         actionCancel.disabled = false;
         updateConfirmationButton();
         actionDialog.showModal();
@@ -1058,6 +1206,7 @@
           id: record.id,
           action: pending.action,
           status: pending.status,
+          confirmDelete: pending.action === "delete",
           expectedStatus: record.status,
           expectedArchivedAt: record.archivedAt || null,
           expectedUpdatedAt: record.statusUpdatedAt || null,
@@ -1075,14 +1224,20 @@
           const data = await response.json();
           if (!response.ok || !data.ok)
             throw new Error(data.error || "Não foi possível salvar a alteração.");
-          records = records.map((item) =>
-            String(item.id) === String(record.id) ? data.record : item,
-          );
+          if (pending.action === "delete") {
+            records = records.filter(item => String(item.id) !== String(data.deletedId));
+            if (openRecord && String(openRecord.id) === String(record.id)) closeDetail();
+          } else {
+            records = records.map((item) =>
+              String(item.id) === String(record.id) ? data.record : item,
+            );
+            if (openRecord && String(openRecord.id) === String(record.id)) openDetail(data.record);
+          }
           render();
-          if (openRecord && String(openRecord.id) === String(record.id)) openDetail(data.record);
           listStatus.textContent =
-            pending.action === "archive"
-              ? "Cadastro arquivado. Use o filtro Arquivados para encontrá-lo e restaurá-lo."
+            pending.action === "delete" ? "Registro do candidato excluído definitivamente."
+            : pending.action === "archive"
+              ? "Cadastro arquivado. Abra a área Arquivados para encontrá-lo e restaurá-lo."
               : pending.action === "restore"
                 ? "Cadastro restaurado para a situação anterior."
                 : "Situação atualizada. A alteração não desativa acessos já criados.";
@@ -1128,7 +1283,7 @@
           records = data.records || [];
           if (data.loginUrl) loginUrl = data.loginUrl;
           listStatus.textContent =
-            "Use os botões dos cartões ou arraste entre as colunas. Toda alteração pede confirmação.";
+            "Arraste entre as divisões ou clique no cadastro para mover, arquivar ou excluir. Toda alteração pede confirmação.";
           render();
         } catch (error) {
           listStatus.textContent = "Erro ao carregar os cadastros.";
@@ -1149,6 +1304,11 @@
         if (event.key === "Enter") enter(tokenInput.value.trim());
       });
       refreshBtn.addEventListener("click", () => loadRecords(currentToken));
+      // Atualiza os prazos e o arquivamento enquanto o painel estiver aberto.
+      setInterval(() => {
+        if (currentToken && !actionBusy && !actionDialog.open && !openRecord && !document.hidden)
+          loadRecords(currentToken);
+      }, 60000);
       logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem(STORAGE_KEY);
         currentToken = null;

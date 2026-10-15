@@ -7,15 +7,16 @@
 // GET   : lista todos os cadastros - só libera com o header "X-Admin-Token"
 //         igual ao ADMIN_TOKEN configurado, para os dados dos parceiros
 //         (CPF/CNPJ, contatos) nunca ficarem públicos.
-// PATCH : atualiza o status (pendente/aprovado/recusado) de um cadastro -
+// PATCH : atualiza o status (pendente/em_negociacao/aprovado/recusado) de um cadastro -
 //         também protegido pelo mesmo token.
 
 require __DIR__ . '/../config.php';
 require __DIR__ . '/lib/mailer.php';
 require __DIR__ . '/lib/soublu.php';
 require __DIR__ . '/lib/admin-actions.php';
+require __DIR__ . '/lib/partner-archive.php';
 
-const STATUSES = ['pendente', 'aprovado', 'recusado'];
+const STATUSES = ['pendente', 'em_negociacao', 'aprovado', 'recusado'];
 
 function recordFromRow(array $row): array {
   return [
@@ -36,6 +37,7 @@ function recordFromRow(array $row): array {
     'status' => $row['status'],
     'archivedAt' => $row['archived_at'] ?? null,
     'statusUpdatedAt' => $row['status_updated_at'] ?? null,
+    'archiveDueAt' => partnerArchiveDueAt($row)?->format(DATE_ATOM),
     'fontedataResult' => !empty($row['fontedata_result']) ? json_decode($row['fontedata_result'], true) : null,
     'fontedataConsultadoEm' => $row['fontedata_consultado_em'],
     'soubluUserId' => $row['soublu_user_id'],
@@ -100,6 +102,7 @@ if ($method === 'GET') {
     }
   }
   try {
+    archiveExpiredPartners(db());
     $rows = db()->query('SELECT * FROM lp_parceiros ORDER BY id DESC')->fetchAll();
     jsonResponse([
       'ok' => true,
@@ -142,7 +145,7 @@ if ($method === 'PATCH') {
   }
 
   $action = $data['action'] ?? 'status';
-  if (!is_scalar($id) || !ctype_digit((string) $id) || !in_array($action, ['status', 'archive', 'restore'], true)
+  if (!is_scalar($id) || !ctype_digit((string) $id) || !in_array($action, ['status', 'archive', 'restore', 'delete'], true)
       || ($action === 'status' && !in_array($status, STATUSES, true))) {
     jsonResponse(['ok' => false, 'error' => 'Cadastro ou ação inválidos.'], 400);
   }
@@ -165,13 +168,24 @@ if ($method === 'PATCH') {
       $pdo->rollBack();
       jsonResponse(['ok' => false, 'error' => 'O cadastro foi atualizado. Recarregue a lista antes de continuar.'], 409);
     }
+    if ($action === 'delete') {
+      if ($record['status'] !== 'recusado' || ($data['confirmDelete'] ?? false) !== true) {
+        $pdo->rollBack();
+        jsonResponse(['ok' => false, 'error' => 'A exclusão definitiva exige confirmação e só está disponível em Excluídos.'], 409);
+      }
+      $stmt = $pdo->prepare('DELETE FROM lp_parceiros WHERE id = :id');
+      $stmt->execute(['id' => $id]);
+      $pdo->commit();
+      jsonResponse(['ok' => true, 'deletedId' => (string) $id]);
+    }
     if ($action !== 'status') {
       if (!array_key_exists('archived_at', $record)) {
         $pdo->rollBack();
         jsonResponse(['ok' => false, 'error' => 'Arquivamento indisponível: aplique a migração 001_partner_archive.sql.'], 503);
       }
-      $stmt = $pdo->prepare('UPDATE lp_parceiros SET archived_at = :archived WHERE id = :id');
-      $stmt->execute(['id' => $id, 'archived' => $action === 'archive' ? date('c') : null]);
+      $stmt = $pdo->prepare('UPDATE lp_parceiros SET archived_at = :archived, status_updated_at = :updated WHERE id = :id');
+      $stmt->execute(['id' => $id, 'archived' => $action === 'archive' ? date('c') : null,
+        'updated' => $action === 'restore' ? date('c') : $record['status_updated_at']]);
       $soublu = null;
     } else {
       if (!empty($record['archived_at'])) {
