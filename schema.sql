@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS lp_parceiros (
   message TEXT,
   status VARCHAR(16) NOT NULL DEFAULT 'pendente',
   status_updated_at VARCHAR(40) DEFAULT NULL,
+  archived_at VARCHAR(40) DEFAULT NULL,
   fontedata_result TEXT DEFAULT NULL,
   fontedata_consultado_em VARCHAR(40) DEFAULT NULL,
   soublu_user_id VARCHAR(64) DEFAULT NULL,

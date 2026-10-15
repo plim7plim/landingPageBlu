@@ -13,6 +13,7 @@
 require __DIR__ . '/../config.php';
 require __DIR__ . '/lib/mailer.php';
 require __DIR__ . '/lib/soublu.php';
+require __DIR__ . '/lib/admin-actions.php';
 
 const STATUSES = ['pendente', 'aprovado', 'recusado'];
 
@@ -33,6 +34,8 @@ function recordFromRow(array $row): array {
     'creditExperience' => $row['credit_experience'],
     'message' => $row['message'],
     'status' => $row['status'],
+    'archivedAt' => $row['archived_at'] ?? null,
+    'statusUpdatedAt' => $row['status_updated_at'] ?? null,
     'fontedataResult' => !empty($row['fontedata_result']) ? json_decode($row['fontedata_result'], true) : null,
     'fontedataConsultadoEm' => $row['fontedata_consultado_em'],
     'soubluUserId' => $row['soublu_user_id'],
@@ -78,6 +81,24 @@ if ($method === 'POST') {
 
 if ($method === 'GET') {
   requireAdmin();
+  header('Cache-Control: no-store');
+  if (($_GET['action'] ?? '') === 'approval-challenge') {
+    $id = $_GET['id'] ?? '';
+    if (!is_string($id) || !ctype_digit($id)) jsonResponse(['ok' => false, 'error' => 'Cadastro inválido.'], 400);
+    try {
+      $stmt = db()->prepare('SELECT * FROM lp_parceiros WHERE id = :id');
+      $stmt->execute(['id' => $id]);
+      $record = $stmt->fetch();
+      if (!$record) jsonResponse(['ok' => false, 'error' => 'Cadastro não encontrado.'], 404);
+      if (!empty($record['archived_at']) || !empty($record['soublu_user_id'])) {
+        jsonResponse(['ok' => false, 'error' => 'Atualize a lista: este cadastro está arquivado ou já possui acesso.'], 409);
+      }
+      jsonResponse(['ok' => true, 'challenge' => issueApprovalChallenge($record)]);
+    } catch (Throwable $e) {
+      error_log('Falha ao preparar confirmação: ' . $e->getMessage());
+      jsonResponse(['ok' => false, 'error' => 'Não foi possível gerar a confirmação.'], 500);
+    }
+  }
   try {
     $rows = db()->query('SELECT * FROM lp_parceiros ORDER BY id DESC')->fetchAll();
     jsonResponse([
@@ -120,25 +141,60 @@ if ($method === 'PATCH') {
     }
   }
 
-  if (!$id || !in_array($status, STATUSES, true)) {
-    jsonResponse(['ok' => false, 'error' => 'id e status (pendente/aprovado/recusado) são obrigatórios.'], 400);
+  $action = $data['action'] ?? 'status';
+  if (!is_scalar($id) || !ctype_digit((string) $id) || !in_array($action, ['status', 'archive', 'restore'], true)
+      || ($action === 'status' && !in_array($status, STATUSES, true))) {
+    jsonResponse(['ok' => false, 'error' => 'Cadastro ou ação inválidos.'], 400);
   }
+  $pdo = null;
   try {
-    $stmt = db()->prepare('UPDATE lp_parceiros SET status = :status, status_updated_at = :updated WHERE id = :id');
-    $stmt->execute(['status' => $status, 'updated' => date('c'), 'id' => $id]);
-    if ($stmt->rowCount() === 0) {
+    $pdo = db();
+    $pdo->beginTransaction();
+    $stmt = $pdo->prepare('SELECT * FROM lp_parceiros WHERE id = :id FOR UPDATE');
+    $stmt->execute(['id' => $id]);
+    $record = $stmt->fetch();
+    if (!$record) {
+      $pdo->rollBack();
       jsonResponse(['ok' => false, 'error' => 'Cadastro não encontrado.'], 404);
     }
-
-    $soublu = null;
-    if ($status === 'aprovado') {
-      $soublu = syncParceiroToSoublu($id);
+    if (!array_key_exists('expectedStatus', $data) || !array_key_exists('expectedArchivedAt', $data)
+        || !array_key_exists('expectedUpdatedAt', $data)
+        || $data['expectedStatus'] !== $record['status']
+        || $data['expectedArchivedAt'] !== ($record['archived_at'] ?? null)
+        || $data['expectedUpdatedAt'] !== ($record['status_updated_at'] ?? null)) {
+      $pdo->rollBack();
+      jsonResponse(['ok' => false, 'error' => 'O cadastro foi atualizado. Recarregue a lista antes de continuar.'], 409);
     }
-
-    jsonResponse(['ok' => true, 'soublu' => $soublu]);
-  } catch (Exception $e) {
-    error_log('Erro ao atualizar status do cadastro: ' . $e->getMessage());
-    jsonResponse(['ok' => false], 500);
+    if ($action !== 'status') {
+      if (!array_key_exists('archived_at', $record)) {
+        $pdo->rollBack();
+        jsonResponse(['ok' => false, 'error' => 'Arquivamento indisponível: aplique a migração 001_partner_archive.sql.'], 503);
+      }
+      $stmt = $pdo->prepare('UPDATE lp_parceiros SET archived_at = :archived WHERE id = :id');
+      $stmt->execute(['id' => $id, 'archived' => $action === 'archive' ? date('c') : null]);
+      $soublu = null;
+    } else {
+      if (!empty($record['archived_at'])) {
+        $pdo->rollBack();
+        jsonResponse(['ok' => false, 'error' => 'Restaure o cadastro antes de alterar a situação.'], 409);
+      }
+      if ($status === 'aprovado' && empty($record['soublu_user_id']) && !consumeApprovalChallenge($record, $data)) {
+        $pdo->rollBack();
+        jsonResponse(['ok' => false, 'error' => 'Confirmação inválida ou expirada. Abra uma nova confirmação.'], 409);
+      }
+      $stmt = $pdo->prepare('UPDATE lp_parceiros SET status = :status, status_updated_at = :updated WHERE id = :id');
+      $stmt->execute(['status' => $status, 'updated' => date('c'), 'id' => $id]);
+      $soublu = $status === 'aprovado' ? syncParceiroToSoublu((string) $id) : null;
+    }
+    $stmt = $pdo->prepare('SELECT * FROM lp_parceiros WHERE id = :id');
+    $stmt->execute(['id' => $id]);
+    $updated = $stmt->fetch();
+    $pdo->commit();
+    jsonResponse(['ok' => true, 'record' => recordFromRow($updated), 'soublu' => $soublu]);
+  } catch (Throwable $e) {
+    if ($pdo && $pdo->inTransaction()) $pdo->rollBack();
+    error_log('Erro ao atualizar cadastro: ' . $e->getMessage());
+    jsonResponse(['ok' => false, 'error' => 'Não foi possível salvar a alteração. Atualize a lista antes de tentar novamente.'], 500);
   }
 }
 

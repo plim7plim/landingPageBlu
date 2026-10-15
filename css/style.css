@@ -1661,6 +1661,7 @@ h2 {
     display: inline-flex;
   }
   .nav-menu {
+    order: 3;
     display: grid;
     width: 100%;
     gap: 16px;
@@ -1688,7 +1689,10 @@ h2 {
   .nav-menu .nav-links a:hover {
     background: var(--bg);
   }
-  .nav-menu .nav-actions {
+  .landing-header .nav-actions {
+    order: 2;
+    width: 100%;
+    flex-wrap: wrap;
     margin: 0;
     justify-content: flex-start;
     padding-top: 12px;
@@ -1913,6 +1917,52 @@ h2 {
   .hero h1 {
     font-size: 32px;
     letter-spacing: -1px;
+  }
+}
+/* Cabeçalho compacto no celular, com os acessos de parceiro sempre visíveis. */
+@media (max-width: 760px) {
+  .landing-header .nav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px 16px;
+    padding-block: 14px 16px;
+  }
+  .landing-header .brand-logo {
+    height: 28px;
+  }
+  .landing-header .nav-toggle {
+    min-height: 44px;
+    padding: 9px 13px;
+    border: 0;
+    background: var(--bg);
+    border-radius: 12px;
+    font-size: 13px;
+  }
+  .landing-header .nav-actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .landing-header .nav-actions .btn,
+  .landing-header .nav-actions .nav-contact {
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+    padding: 11px 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: nowrap;
+    box-shadow: none;
+  }
+  .landing-header .nav-menu {
+    grid-column: 1 / -1;
+    padding: 0;
   }
 }
 @media (prefers-reduced-motion: no-preference) {

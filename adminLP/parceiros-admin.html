@@ -6,8 +6,8 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>Cadastros de parceiros · SOU + BLU</title>
 
-    <link rel="icon" type="image/png" href="/imagens/favicon.png" />
-    <link rel="alternate icon" href="/imagens/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/imagens/favicon-blu.svg" />
+    <link rel="alternate icon" type="image/png" href="/imagens/favicon-blu.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -276,13 +276,145 @@
           grid-template-columns: 1fr;
         }
       }
+      .admin-filters {
+        display: grid;
+        grid-template-columns: 2fr repeat(4, 1fr);
+        gap: 12px;
+        margin: 24px 0 16px;
+      }
+      .admin-filters label {
+        display: grid;
+        gap: 6px;
+        font-size: 12px;
+      }
+      .admin-filters input,
+      .admin-filters select,
+      .confirm-input {
+        min-width: 0;
+        width: 100%;
+        min-height: 44px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: white;
+        color: var(--text);
+        font: inherit;
+      }
+      .filter-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 14px;
+      }
+      .card-actions button {
+        min-height: 40px;
+        border: 1px solid var(--line);
+        background: white;
+        color: var(--navy);
+        border-radius: 8px;
+        padding: 8px 10px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .card-actions button:hover {
+        background: var(--bg);
+      }
+      .partner-card {
+        overflow-wrap: anywhere;
+      }
+      .card-archived {
+        display: inline-block;
+        margin-top: 8px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .action-dialog {
+        margin: auto;
+        width: min(520px, calc(100% - 32px));
+        max-height: 90vh;
+        overflow: auto;
+        padding: 28px;
+        border: 0;
+        border-radius: 20px;
+        color: var(--text);
+      }
+      .action-dialog::backdrop {
+        background: rgba(10, 25, 45, 0.55);
+      }
+      .action-dialog h2 {
+        font-size: 24px;
+        margin-bottom: 16px;
+      }
+      .action-dialog p {
+        margin-bottom: 14px;
+        overflow-wrap: anywhere;
+        font-size: 14px;
+      }
+      .confirmation-key {
+        display: block;
+        padding: 14px;
+        margin: 12px 0;
+        background: var(--bg);
+        border-radius: 8px;
+        font-size: 26px;
+        letter-spacing: 5px;
+        text-align: center;
+      }
+      .action-dialog label {
+        display: block;
+        font-size: 14px;
+      }
+      .dialog-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .action-dialog [role="status"] {
+        color: #a32d24;
+        margin-top: 12px;
+      }
+      button:disabled {
+        opacity: 0.55;
+        cursor: wait;
+      }
+      #adminListStatus {
+        margin-bottom: 18px;
+      }
+      @media (max-width: 900px) {
+        .admin-filters {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .admin-filters label:first-child {
+          grid-column: 1/-1;
+        }
+      }
+      @media (max-width: 480px) {
+        .admin-filters {
+          grid-template-columns: 1fr;
+        }
+        .action-dialog {
+          padding: 22px;
+        }
+        .dialog-actions button {
+          flex: 1;
+        }
+      }
     </style>
   </head>
   <body>
     <header class="header">
       <div class="container nav">
         <a href="/index.html" class="brand" aria-label="SOU + BLU - início">
-          <img class="brand-logo" src="/imagens/image.png" alt="SOU + BLU" />
+          <img class="brand-logo" src="/imagens/logo-sou-blu.webp" alt="SOU + BLU" />
         </a>
       </div>
     </header>
@@ -315,7 +447,38 @@
             </button>
           </div>
         </div>
-        <p id="adminListStatus" class="admin-status"></p>
+        <div class="admin-filters" aria-label="Filtros de cadastros">
+          <label
+            >Buscar cadastro<input
+              id="filterSearch"
+              type="search"
+              placeholder="Nome, CPF/CNPJ, e-mail ou cidade"
+          /></label>
+          <label
+            >Situação<select id="filterStatus">
+              <option value="">Todas</option>
+              <option value="pendente">Pendente</option>
+              <option value="aprovado">Aprovado</option>
+              <option value="recusado">Recusado</option>
+            </select></label
+          >
+          <label
+            >Visualização<select id="filterArchive">
+              <option value="active">Em acompanhamento</option>
+              <option value="archived">Arquivados</option>
+              <option value="all">Todos</option>
+            </select></label
+          >
+          <label>Cadastrado de<input type="date" id="filterFrom" /></label>
+          <label>Até<input type="date" id="filterTo" /></label>
+        </div>
+        <div class="filter-actions">
+          <button type="button" class="btn btn-outline btn-small" id="clearFilters">
+            Limpar filtros
+          </button>
+          <p id="filterSummary" class="admin-status" role="status"></p>
+        </div>
+        <p id="adminListStatus" class="admin-status" role="status"></p>
 
         <div class="board">
           <section class="board-col" data-status="pendente">
@@ -332,8 +495,8 @@
               <span class="board-count" data-count="aprovado">0</span>
             </div>
             <p class="board-hint">
-              Ao mover um cartão para cá, um usuário parceiro é criado automaticamente na Sou+Blu e
-              o parceiro recebe um e-mail com o login e a senha de acesso.
+              Aprovar exige confirmação antes de criar o acesso e enviar o e-mail. Retirar de
+              Aprovados muda a situação do cadastro; não desativa um acesso já criado.
             </p>
             <div class="board-cards" data-column="aprovado"></div>
           </section>
@@ -359,6 +522,38 @@
           <div id="detailBody" class="detail-body"></div>
         </div>
       </div>
+      <dialog
+        id="actionDialog"
+        class="action-dialog"
+        aria-labelledby="actionTitle"
+        aria-describedby="actionDescription"
+      >
+        <form id="actionForm">
+          <h2 id="actionTitle"></h2>
+          <p id="actionDescription"></p>
+          <p id="actionDestination"></p>
+          <div id="confirmationFields" hidden>
+            <p>
+              Confira os dados e digite o código abaixo para confirmar a criação. Ele vale por 5
+              minutos.
+            </p>
+            <output id="confirmationKey" class="confirmation-key"></output>
+            <label for="confirmationInput">Código de confirmação</label>
+            <input
+              id="confirmationInput"
+              class="confirm-input"
+              inputmode="numeric"
+              maxlength="6"
+              autocomplete="off"
+            />
+          </div>
+          <p id="actionError" role="status"></p>
+          <div class="dialog-actions">
+            <button id="actionCancel" type="button" class="btn btn-outline">Cancelar</button
+            ><button id="actionConfirm" type="submit" class="btn btn-primary">Confirmar</button>
+          </div>
+        </form>
+      </dialog>
     </main>
 
     <script>
@@ -377,6 +572,13 @@
       let currentToken = null;
       let records = [];
       let openRecord = null;
+      let pendingAction = null;
+      let actionBusy = false;
+      const filterSearch = document.getElementById("filterSearch");
+      const filterStatus = document.getElementById("filterStatus");
+      const filterArchive = document.getElementById("filterArchive");
+      const filterFrom = document.getElementById("filterFrom");
+      const filterTo = document.getElementById("filterTo");
       let loginUrl = "https://soumaisblu.com.br/index.html";
 
       function escapeHtml(value) {
@@ -393,18 +595,68 @@
           .filter(Boolean)
           .join(" · ");
         return `
-        <div class="partner-card" draggable="true" data-id="${escapeHtml(record.id)}">
+        <div class="partner-card" draggable="${!record.archivedAt}" tabindex="0" aria-label="${escapeHtml(record.name)} — abrir detalhes" data-id="${escapeHtml(record.id)}">
           <strong>${escapeHtml(record.name)}</strong>
           <small class="card-doc">${escapeHtml(record.document)}</small>
           <small>${escapeHtml(record.commercialPhone)} · ${escapeHtml(record.commercialEmail)}</small>
           ${bits ? `<small>${bits}</small>` : ""}
+          ${record.archivedAt ? `<span class="card-archived">Arquivado em ${escapeHtml(formatDate(record.archivedAt))}</span>` : ""}
+          <div class="card-actions">
+            ${
+              record.archivedAt
+                ? '<button type="button" data-action="restore">Restaurar</button>'
+                : `
+              ${record.status !== "aprovado" || !record.soubluUserId ? '<button type="button" data-action="status" data-status="aprovado">Aprovar</button>' : ""}
+              ${record.status !== "pendente" ? '<button type="button" data-action="status" data-status="pendente">Mover para pendente</button>' : ""}
+              ${record.status !== "recusado" ? '<button type="button" data-action="status" data-status="recusado">Recusar</button>' : ""}
+              <button type="button" data-action="archive">Arquivar</button>`
+            }
+          </div>
         </div>
       `;
       }
 
       function render() {
         const grouped = { pendente: [], aprovado: [], recusado: [] };
-        records.forEach((record) => {
+        const search = normalizeSearch(filterSearch.value);
+        const digits = filterSearch.value.replace(/\D/g, "");
+        const invalidPeriod =
+          filterFrom.value && filterTo.value && filterFrom.value > filterTo.value;
+        const visibleRecords = records.filter((record) => {
+          if (invalidPeriod) return false;
+          if (filterArchive.value === "active" && record.archivedAt) return false;
+          if (filterArchive.value === "archived" && !record.archivedAt) return false;
+          if (filterStatus.value && record.status !== filterStatus.value) return false;
+          const date = (record.createdAt || "").slice(0, 10);
+          if (filterFrom.value && date < filterFrom.value) return false;
+          if (filterTo.value && date > filterTo.value) return false;
+          const text = normalizeSearch(
+            [
+              record.name,
+              record.document,
+              record.commercialEmail,
+              record.city,
+              record.commercialPhone,
+            ].join(" "),
+          );
+          return (
+            !search ||
+            text.includes(search) ||
+            (digits.length >= 3 && (record.document || "").replace(/\D/g, "").includes(digits))
+          );
+        });
+        document.getElementById("filterSummary").textContent = invalidPeriod
+          ? "A data inicial deve ser anterior ou igual à final."
+          : `${visibleRecords.length} de ${records.length} cadastro(s).`;
+        document.querySelectorAll(".board-col").forEach((column) => {
+          column.hidden = Boolean(
+            filterStatus.value && filterStatus.value !== column.dataset.status,
+          );
+        });
+        document.querySelector(".board").style.gridTemplateColumns = filterStatus.value
+          ? "minmax(0, 1fr)"
+          : "";
+        visibleRecords.forEach((record) => {
           const status = grouped[record.status] ? record.status : "pendente";
           grouped[status].push(record);
         });
@@ -424,6 +676,22 @@
         attachDragHandlers();
       }
 
+      function normalizeSearch(value) {
+        return String(value || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .trim();
+      }
+      [filterSearch, filterStatus, filterArchive, filterFrom, filterTo].forEach((input) =>
+        input.addEventListener("input", render),
+      );
+      document.getElementById("clearFilters").addEventListener("click", () => {
+        filterSearch.value = filterStatus.value = filterFrom.value = filterTo.value = "";
+        filterArchive.value = "active";
+        render();
+      });
+
       function attachDragHandlers() {
         document.querySelectorAll(".partner-card").forEach((card) => {
           card.addEventListener("dragstart", (event) => {
@@ -431,9 +699,19 @@
             card.classList.add("dragging");
           });
           card.addEventListener("dragend", () => card.classList.remove("dragging"));
-          card.addEventListener("click", () => {
+          card.addEventListener("click", (event) => {
             const record = records.find((item) => String(item.id) === String(card.dataset.id));
-            if (record) openDetail(record);
+            if (!record) return;
+            const button = event.target.closest("button[data-action]");
+            if (button) prepareAction(record, button.dataset.action, button.dataset.status);
+            else openDetail(record);
+          });
+          card.addEventListener("keydown", (event) => {
+            if (event.target === card && (event.key === "Enter" || event.key === " ")) {
+              event.preventDefault();
+              const record = records.find((item) => String(item.id) === card.dataset.id);
+              if (record) openDetail(record);
+            }
           });
         });
       }
@@ -591,9 +869,13 @@
 
       // Telefone do cadastro (WhatsApp, senão comercial) -> só dígitos com DDI 55.
       function partnerWhatsappNumber(record) {
-        const digits = String(record.whatsappPhone || record.commercialPhone || "").replace(/\D/g, "");
+        const digits = String(record.whatsappPhone || record.commercialPhone || "").replace(
+          /\D/g,
+          "",
+        );
         if (digits.length === 10 || digits.length === 11) return "55" + digits;
-        if ((digits.length === 12 || digits.length === 13) && digits.startsWith("55")) return digits;
+        if ((digits.length === 12 || digits.length === 13) && digits.startsWith("55"))
+          return digits;
         return null;
       }
 
@@ -663,36 +945,163 @@
           const record = records.find((item) => String(item.id) === String(id));
           if (!record || record.status === newStatus) return;
 
-          const previousStatus = record.status;
-          record.status = newStatus;
-          render();
-
-          try {
-            const response = await fetch("/api/parceiros.php", {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json", "X-Admin-Token": currentToken },
-              body: JSON.stringify({ id, status: newStatus }),
-            });
-            if (!response.ok) throw new Error();
-            const data = await response.json();
-            if (newStatus === "aprovado" && data.soublu) {
-              if (data.soublu.ok && data.soublu.tempPassword) {
-                record.soubluUserId = data.soublu.userId;
-                record.soubluTempPassword = data.soublu.tempPassword;
-                const emailNote = data.soublu.emailSent
-                  ? "E-mail enviado ao parceiro."
-                  : "O e-mail NÃO foi enviado: abra o cartão e use Reenviar e-mail ou WhatsApp.";
-                listStatus.textContent = `Acesso Sou+Blu criado! Login: ${record.commercialEmail} · Senha temporária: ${data.soublu.tempPassword}. ${emailNote}`;
-              } else if (!data.soublu.ok) {
-                listStatus.textContent = `Aprovado, mas não foi possível criar o acesso na Sou+Blu: ${data.soublu.error || "erro desconhecido"}. Veja detalhes no cartão.`;
-              }
-            }
-          } catch {
-            record.status = previousStatus;
-            render();
-            listStatus.textContent = "Não foi possível salvar essa mudança. Tente de novo.";
-          }
+          if (record.archivedAt) return;
+          prepareAction(record, "status", newStatus);
         });
+      });
+
+      const actionDialog = document.getElementById("actionDialog");
+      const confirmationInput = document.getElementById("confirmationInput");
+      const actionConfirm = document.getElementById("actionConfirm");
+      const actionCancel = document.getElementById("actionCancel");
+      const actionError = document.getElementById("actionError");
+
+      function updateConfirmationButton() {
+        actionConfirm.disabled =
+          actionBusy ||
+          !pendingAction ||
+          pendingAction.loading ||
+          (pendingAction.needsCode &&
+            (!pendingAction.challenge ||
+              confirmationInput.value.trim() !== pendingAction.challenge.code));
+      }
+      confirmationInput.addEventListener("input", updateConfirmationButton);
+      actionCancel.addEventListener("click", () => {
+        if (!actionBusy) actionDialog.close();
+      });
+      actionDialog.addEventListener("cancel", (event) => {
+        if (actionBusy) event.preventDefault();
+      });
+      actionDialog.addEventListener("close", () => {
+        pendingAction = null;
+      });
+
+      async function prepareAction(record, action, status) {
+        if (actionBusy || actionDialog.open) return;
+        const needsCode = action === "status" && status === "aprovado" && !record.soubluUserId;
+        const pending = { record, action, status, needsCode, loading: needsCode, challenge: null };
+        pendingAction = pending;
+        actionError.textContent = "";
+        confirmationInput.value = "";
+        document.getElementById("confirmationFields").hidden = !needsCode;
+        document.getElementById("confirmationKey").textContent = "…";
+        document.getElementById("actionDestination").textContent = "";
+        document.getElementById("actionTitle").textContent = needsCode
+          ? "Confirmar criação de usuário"
+          : action === "archive"
+            ? "Arquivar cadastro?"
+            : action === "restore"
+              ? "Restaurar cadastro?"
+              : "Alterar situação?";
+        let description;
+        if (needsCode)
+          description = `Você realmente deseja criar um usuário para ${record.name} (${record.commercialEmail})?`;
+        else if (action === "archive")
+          description = `Arquivar ${record.name}? O cadastro sairá do acompanhamento, mas os dados e a situação serão preservados. Você poderá restaurá-lo nos filtros.`;
+        else if (action === "restore")
+          description = `Restaurar ${record.name} para ${statusLabel(record.status)}? Esta ação não cria nem reativa um acesso.`;
+        else
+          description = `Mover ${record.name} de ${statusLabel(record.status)} para ${statusLabel(status)}?`;
+        if (record.soubluUserId && action !== "restore")
+          description +=
+            " O acesso já criado na Sou+Blu será mantido; esta ação não bloqueia nem exclui o usuário.";
+        document.getElementById("actionDescription").textContent = description;
+        actionConfirm.textContent = needsCode
+          ? "Confirmar e criar acesso"
+          : action === "archive"
+            ? "Arquivar"
+            : action === "restore"
+              ? "Restaurar"
+              : "Confirmar alteração";
+        actionCancel.disabled = false;
+        updateConfirmationButton();
+        actionDialog.showModal();
+        actionCancel.focus();
+        if (!needsCode) return;
+        try {
+          const response = await fetch(
+            `/api/parceiros.php?action=approval-challenge&id=${encodeURIComponent(record.id)}`,
+            {
+              headers: { "X-Admin-Token": currentToken },
+              cache: "no-store",
+            },
+          );
+          const data = await response.json();
+          if (pendingAction !== pending) return;
+          if (!response.ok || !data.ok)
+            throw new Error(data.error || "Não foi possível gerar o código.");
+          pending.challenge = data.challenge;
+          pending.loading = false;
+          document.getElementById("confirmationKey").textContent = data.challenge.code;
+          document.getElementById("actionDescription").textContent =
+            `Você realmente deseja criar um usuário para ${data.challenge.name} (${data.challenge.email})? O parceiro receberá o e-mail de acesso.`;
+          document.getElementById("actionDestination").textContent =
+            `Destino do acesso: ${data.challenge.loginUrl}`;
+          confirmationInput.focus();
+          updateConfirmationButton();
+        } catch (error) {
+          if (pendingAction === pending) actionError.textContent = error.message;
+        }
+      }
+
+      document.getElementById("actionForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (actionConfirm.disabled || !pendingAction) return;
+        const pending = pendingAction;
+        const record = pending.record;
+        actionBusy = true;
+        updateConfirmationButton();
+        actionCancel.disabled = true;
+        refreshBtn.disabled = logoutBtn.disabled = true;
+        actionError.textContent = "Salvando…";
+        const body = {
+          id: record.id,
+          action: pending.action,
+          status: pending.status,
+          expectedStatus: record.status,
+          expectedArchivedAt: record.archivedAt || null,
+          expectedUpdatedAt: record.statusUpdatedAt || null,
+        };
+        if (pending.challenge) {
+          body.confirmationToken = pending.challenge.confirmationToken;
+          body.confirmationCode = confirmationInput.value.trim();
+        }
+        try {
+          const response = await fetch("/api/parceiros.php", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json", "X-Admin-Token": currentToken },
+            body: JSON.stringify(body),
+          });
+          const data = await response.json();
+          if (!response.ok || !data.ok)
+            throw new Error(data.error || "Não foi possível salvar a alteração.");
+          records = records.map((item) =>
+            String(item.id) === String(record.id) ? data.record : item,
+          );
+          render();
+          if (openRecord && String(openRecord.id) === String(record.id)) openDetail(data.record);
+          listStatus.textContent =
+            pending.action === "archive"
+              ? "Cadastro arquivado. Use o filtro Arquivados para encontrá-lo e restaurá-lo."
+              : pending.action === "restore"
+                ? "Cadastro restaurado para a situação anterior."
+                : "Situação atualizada. A alteração não desativa acessos já criados.";
+          if (data.soublu && !data.soublu.ok)
+            listStatus.textContent = `Cadastro aprovado, mas o acesso não foi criado: ${data.soublu.error || "falha na integração"}. Abra o cartão para conferir.`;
+          else if (data.soublu && data.soublu.tempPassword)
+            listStatus.textContent = data.soublu.emailSent
+              ? "Acesso criado. E-mail enviado ao parceiro."
+              : "Acesso criado, mas o e-mail não foi enviado. Abra o cartão para conferir e reenviar.";
+          actionDialog.close();
+        } catch (error) {
+          actionError.textContent = `${error.message} Feche esta janela e atualize a lista antes de tentar novamente.`;
+          pending.loading = true;
+        } finally {
+          actionBusy = false;
+          actionCancel.disabled = false;
+          refreshBtn.disabled = logoutBtn.disabled = false;
+          updateConfirmationButton();
+        }
       });
 
       async function loadRecords(token) {
@@ -702,6 +1111,9 @@
             headers: { "X-Admin-Token": token },
           });
           if (response.status === 401) {
+            currentToken = null;
+            records = [];
+            render();
             sessionStorage.removeItem(STORAGE_KEY);
             content.hidden = true;
             gate.hidden = false;
@@ -715,7 +1127,8 @@
           }
           records = data.records || [];
           if (data.loginUrl) loginUrl = data.loginUrl;
-          listStatus.textContent = `${records.length} cadastro(s). Arraste os cartões entre as colunas para mudar o status.`;
+          listStatus.textContent =
+            "Use os botões dos cartões ou arraste entre as colunas. Toda alteração pede confirmação.";
           render();
         } catch (error) {
           listStatus.textContent = "Erro ao carregar os cadastros.";
@@ -739,6 +1152,11 @@
       logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem(STORAGE_KEY);
         currentToken = null;
+        records = [];
+        render();
+        closeDetail();
+        actionDialog.close();
+        pendingAction = null;
         content.hidden = true;
         gate.hidden = false;
         tokenInput.value = "";
