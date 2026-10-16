@@ -39,3 +39,7 @@ O filtro Experiência com crédito separa as respostas Sim (com experiência), N
 Experiência e visualização são aplicadas por botões de um clique, com seleção destacada. Situação e período ficam em seção expansível, que informa quantos campos estão ativos. Limpar filtros restaura os valores iniciais.
 
 Arquivados agora têm área própria, acessada pelo botão Arquivados no topo. A lista unificada mostra a divisão anterior, a data do arquivamento e Restaurar. Os filtros valem para a área selecionada; Limpar filtros preserva a área atual.
+
+A área de arquivados separa Aprovados e Recusados, com contadores próprios. Cadastros arquivados manualmente em outras situações continuam acessíveis em Outras situações.
+
+A opção Restaurar foi removida da interface, incluindo cartões e detalhes dos arquivados.

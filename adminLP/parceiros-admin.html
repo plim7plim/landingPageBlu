@@ -313,6 +313,10 @@
       .archive-navigation span { margin-left: 5px; }
       .archive-area { padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--bg); }
       .archive-area h2 { font-size: 20px; margin-bottom: 8px; }
+      .archive-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 24px; }
+      .archive-group { min-width: 0; padding: 16px; background: white; border: 1px solid var(--line); border-radius: 10px; }
+      .archive-group h3 { font-size: 15px; }
+      @media (max-width: 760px) { .archive-groups { grid-template-columns: 1fr; } }
       .archive-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; margin-top: 20px; }
       .archive-cards .partner-card { cursor: pointer; }
       .quick-filter { display: grid; gap: 8px; font-size: 12px; }
@@ -570,7 +574,7 @@
               Aprovar exige confirmação antes de criar o acesso e enviar o e-mail. Retirar de
               Aprovados muda a situação do cadastro; não desativa um acesso já criado.
               Após 3 dias (72 horas) nesta divisão, o cadastro será arquivado automaticamente.
-              Encontre-o na área Arquivados. Restaurar reinicia o prazo.
+              Encontre-o na área Arquivados.
             </p>
             <div class="board-cards" data-column="aprovado"></div>
           </section>
@@ -586,8 +590,21 @@
         </div>
         <section id="archiveArea" class="archive-area" aria-labelledby="archiveTitle" hidden>
           <h2 id="archiveTitle">Arquivados</h2>
-          <p class="admin-status">Cadastros retirados do acompanhamento. Restaure para voltar à divisão anterior.</p>
-          <div id="archiveCards" class="archive-cards"></div>
+          <p class="admin-status">Cadastros arquivados, separados pela situação no momento do arquivamento.</p>
+          <div class="archive-groups">
+            <section class="archive-group" data-archive-group="aprovado" aria-labelledby="archivedApprovedTitle">
+              <div class="board-col-head"><h3 id="archivedApprovedTitle">Aprovados</h3><span class="board-count" id="archivedApprovedCount">0</span></div>
+              <div id="archivedApprovedCards" class="archive-cards"></div>
+            </section>
+            <section class="archive-group" data-archive-group="recusado" aria-labelledby="archivedRefusedTitle">
+              <div class="board-col-head"><h3 id="archivedRefusedTitle">Recusados</h3><span class="board-count" id="archivedRefusedCount">0</span></div>
+              <div id="archivedRefusedCards" class="archive-cards"></div>
+            </section>
+            <section class="archive-group" data-archive-group="other" aria-labelledby="archivedOtherTitle" hidden>
+              <div class="board-col-head"><h3 id="archivedOtherTitle">Outras situações</h3><span class="board-count" id="archivedOtherCount">0</span></div>
+              <div id="archivedOtherCards" class="archive-cards"></div>
+            </section>
+          </div>
         </section>
       </div>
 
@@ -646,7 +663,7 @@
       const refreshBtn = document.getElementById("adminRefreshBtn");
       const logoutBtn = document.getElementById("adminLogoutBtn");
       const columns = document.querySelectorAll(".board-cards");
-      const counts = document.querySelectorAll(".board-count");
+      const counts = document.querySelectorAll(".board [data-count]");
 
       const STORAGE_KEY = "blu-admin-token";
       let currentToken = null;
@@ -683,7 +700,7 @@
           ${bits ? `<small>${bits}</small>` : ""}
           <small class="card-experience">${escapeHtml(experienceLabel(record.creditExperience))}</small>
           ${!record.archivedAt && record.archiveDueAt ? `<small>Arquivamento automático: ${escapeHtml(formatDate(record.archiveDueAt))}</small>` : ""}
-          ${record.archivedAt ? `<small>Divisão anterior: ${escapeHtml(statusLabel(record.status))}</small><span class="card-archived">Arquivado em ${escapeHtml(formatDate(record.archivedAt))}</span><div class="card-actions"><button type="button" data-action="restore">Restaurar</button></div>` : ""}
+          ${record.archivedAt ? `<small>Divisão anterior: ${escapeHtml(statusLabel(record.status))}</small><span class="card-archived">Arquivado em ${escapeHtml(formatDate(record.archivedAt))}</span>` : ""}
           ${record.status === "recusado" ? '<div class="card-actions"><button type="button" data-action="delete">Excluir</button></div>' : ""}
 
         </div>
@@ -766,9 +783,20 @@
         });
 
         const archived = archiveView ? [...visibleRecords].sort((a, b) => Date.parse(b.archivedAt) - Date.parse(a.archivedAt)) : [];
-        document.getElementById("archiveCards").innerHTML = archived.length
-          ? archived.map(cardHtml).join("")
-          : '<p class="board-empty">Nenhum arquivado encontrado com estes filtros.</p>';
+        const archiveGroups = [
+          { key: "aprovado", prefix: "archivedApproved", items: archived.filter(record => record.status === "aprovado") },
+          { key: "recusado", prefix: "archivedRefused", items: archived.filter(record => record.status === "recusado") },
+          { key: "other", prefix: "archivedOther", items: archived.filter(record => !["aprovado", "recusado"].includes(record.status)) },
+        ];
+        archiveGroups.forEach(group => {
+          document.querySelector(`[data-archive-group="${group.key}"]`).hidden = group.key === "other"
+            ? !group.items.length
+            : Boolean(filterStatus.value && filterStatus.value !== group.key);
+          document.getElementById(`${group.prefix}Count`).textContent = group.items.length;
+          document.getElementById(`${group.prefix}Cards`).innerHTML = group.items.length
+            ? group.items.map(cardHtml).join("")
+            : '<p class="board-empty">Nenhum arquivado encontrado com estes filtros.</p>';
+        });
         attachDragHandlers();
       }
 
@@ -924,7 +952,7 @@
           <h3>Gerenciar cadastro</h3>
           <div class="detail-actions">
             ${record.archivedAt
-              ? '<button type="button" class="btn btn-outline btn-small" data-manage="restore">Restaurar cadastro</button>'
+              ? '<p class="detail-muted">Este cadastro está arquivado.</p>'
               : `<label class="detail-field">Mover para
                   <select id="detailMoveStatus" aria-label="Mover cadastro para">
                     <option value="">Selecione a divisão</option>
@@ -1142,7 +1170,7 @@
         else if (needsCode)
           description = `Você realmente deseja criar um usuário para ${record.name} (${record.commercialEmail})?`;
         else if (action === "archive")
-          description = `Arquivar ${record.name}? O cadastro sairá do acompanhamento, mas os dados e a situação serão preservados. Você poderá restaurá-lo nos filtros.`;
+          description = `Arquivar ${record.name}? O cadastro sairá do acompanhamento, mas os dados e a situação serão preservados. Ele ficará disponível na área Arquivados.`;
         else if (action === "restore")
           description = `Restaurar ${record.name} para ${statusLabel(record.status)}? Esta ação não cria nem reativa um acesso. Em Aprovados e Excluídos, o prazo de 3 dias recomeça agora.`;
         else if (status === "recusado")
@@ -1237,7 +1265,7 @@
           listStatus.textContent =
             pending.action === "delete" ? "Registro do candidato excluído definitivamente."
             : pending.action === "archive"
-              ? "Cadastro arquivado. Abra a área Arquivados para encontrá-lo e restaurá-lo."
+              ? "Cadastro arquivado. Abra a área Arquivados para encontrá-lo."
               : pending.action === "restore"
                 ? "Cadastro restaurado para a situação anterior."
                 : "Situação atualizada. A alteração não desativa acessos já criados.";
